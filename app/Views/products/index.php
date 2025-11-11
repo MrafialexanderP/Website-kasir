@@ -366,6 +366,8 @@ body.modal-open {
     color: #fff;
     padding: 0.85rem 1.2rem;
     border-bottom: none;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
 #addProductModal .modal-title i,
@@ -377,6 +379,8 @@ body.modal-open {
 #editProductModal .modal-body {
     padding: 1.1rem 1.25rem 0.75rem;
     background: #f8f9fc;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 #addProductModal .modal-footer,
