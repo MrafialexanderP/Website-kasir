@@ -102,8 +102,22 @@
 
 <!-- Transaction History -->
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="bi bi-clock-history"></i> Riwayat Transaksi</h5>
+        <!-- Sort Filter -->
+        <div class="d-flex align-items-center">
+            <label class="text-white me-2 mb-0">
+                <i class="bi bi-sort-down"></i> Urutkan:
+            </label>
+            <select id="sortFilter" class="form-select form-select-sm" style="width: auto; min-width: 150px;" onchange="changeSortOrder(this.value)">
+                <option value="newest" <?= ($selectedSort ?? 'newest') === 'newest' ? 'selected' : '' ?>>
+                    <i class="bi bi-arrow-down"></i> Terbaru
+                </option>
+                <option value="oldest" <?= ($selectedSort ?? 'newest') === 'oldest' ? 'selected' : '' ?>>
+                    <i class="bi bi-arrow-up"></i> Terlama
+                </option>
+            </select>
+        </div>
     </div>
     <div class="card-body">
         <?php if (!empty($transactions)): ?>
@@ -122,13 +136,13 @@
                     <tbody>
                         <?php 
                         date_default_timezone_set('Asia/Jakarta');
-                        $no = 1; 
+                        $no = ($pager['currentPage'] - 1) * $pager['perPage'] + 1; 
                         foreach ($transactions as $trx): 
                             // Convert UTC to Asia/Jakarta timezone
                             $datetime = new DateTime($trx['created_at'], new DateTimeZone('UTC'));
                             $datetime->setTimezone(new DateTimeZone('Asia/Jakarta'));
                         ?>
-                            <tr style="animation: fadeInUp 0.6s ease <?= $no * 0.05 ?>s backwards;">
+                            <tr style="animation: fadeInUp 0.6s ease <?= ($no - (($pager['currentPage'] - 1) * $pager['perPage'])) * 0.05 ?>s backwards;">
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td><span class="badge bg-primary"><?= esc($trx['invoice_no']) ?></span></td>
                                 <td><?= $datetime->format('d/m/Y') ?></td>
@@ -142,15 +156,81 @@
                     </tbody>
                     <tfoot>
                         <tr class="table-light fw-bold">
-                            <td colspan="4" class="text-end">TOTAL:</td>
-                            <td class="text-center"><?= array_sum(array_column($transactions, 'total_qty')) ?> item</td>
+                            <td colspan="4" class="text-end">TOTAL KESELURUHAN:</td>
+                            <td class="text-center"><?= $totalItems ?? 0 ?> item</td>
                             <td class="text-end text-success">
-                                Rp <?= number_format(array_sum(array_column($transactions, 'total_price')), 0, ',', '.') ?>
+                                Rp <?= number_format($totalSales ?? 0, 0, ',', '.') ?>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            <?php if ($pager['totalPages'] > 1): ?>
+                <?php 
+                // Build base URL with all parameters
+                $sortParam = isset($selectedSort) ? '&sort=' . $selectedSort : '';
+                ?>
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-muted">
+                        Menampilkan <?= min($pager['perPage'], $pager['total']) ?> dari <?= $pager['total'] ?> transaksi
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <!-- Previous Button -->
+                            <li class="page-item <?= $pager['currentPage'] <= 1 ? 'disabled' : '' ?>">
+                                <a class="page-link" href="<?= base_url('laporan?month=' . $selectedMonth . '&year=' . $selectedYear . $sortParam . '&page=' . ($pager['currentPage'] - 1)) ?>">
+                                    <i class="bi bi-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                            
+                            <!-- Page Numbers -->
+                            <?php 
+                            $startPage = max(1, $pager['currentPage'] - 2);
+                            $endPage = min($pager['totalPages'], $pager['currentPage'] + 2);
+                            
+                            // Show first page
+                            if ($startPage > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?= base_url('laporan?month=' . $selectedMonth . '&year=' . $selectedYear . $sortParam . '&page=1') ?>">1</a>
+                                </li>
+                                <?php if ($startPage > 2): ?>
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            
+                            <!-- Middle pages -->
+                            <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                                <li class="page-item <?= $pager['currentPage'] == $i ? 'active' : '' ?>">
+                                    <a class="page-link" href="<?= base_url('laporan?month=' . $selectedMonth . '&year=' . $selectedYear . $sortParam . '&page=' . $i) ?>">
+                                        <?= $i ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+                            
+                            <!-- Show last page -->
+                            <?php if ($endPage < $pager['totalPages']): ?>
+                                <?php if ($endPage < $pager['totalPages'] - 1): ?>
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <?php endif; ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?= base_url('laporan?month=' . $selectedMonth . '&year=' . $selectedYear . $sortParam . '&page=' . $pager['totalPages']) ?>">
+                                        <?= $pager['totalPages'] ?>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            
+                            <!-- Next Button -->
+                            <li class="page-item <?= $pager['currentPage'] >= $pager['totalPages'] ? 'disabled' : '' ?>">
+                                <a class="page-link" href="<?= base_url('laporan?month=' . $selectedMonth . '&year=' . $selectedYear . $sortParam . '&page=' . ($pager['currentPage'] + 1)) ?>">
+                                    Next <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            <?php endif; ?>
         <?php else: ?>
             <div class="text-center py-5">
                 <i class="bi bi-inbox display-1 text-muted" style="opacity: 0.3;"></i>
@@ -277,6 +357,45 @@
         transform: translateY(0);
     }
 }
+
+/* Pagination Styling */
+.pagination {
+    gap: 5px;
+}
+
+.pagination .page-link {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    color: #667eea;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.pagination .page-link i {
+    font-size: 0.85rem;
+}
 </style>
 
 <script>
@@ -287,5 +406,13 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.animationDelay = (index * 0.1) + 's';
     });
 });
+
+// Function to change sort order
+function changeSortOrder(sortValue) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('sort', sortValue);
+    urlParams.delete('page'); // Reset to page 1 when changing sort
+    window.location.href = '<?= base_url('laporan') ?>?' + urlParams.toString();
+}
 </script>
 <?= $this->endSection() ?>

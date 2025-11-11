@@ -49,14 +49,38 @@ class LaporanController extends BaseController
             ->get();
         $data['topProduct'] = $query->getRowArray() ?? [];
 
-        // List transaksi terbaru
+        // List transaksi dengan pagination
+        $perPage = 10; // 10 transaksi per halaman
+        $page = $this->request->getGet('page') ?? 1;
+        $offset = ($page - 1) * $perPage;
+        
+        // Get sort order (newest/oldest)
+        $sort = $this->request->getGet('sort') ?? 'newest';
+        $orderBy = ($sort === 'oldest') ? 'ASC' : 'DESC';
+        
+        // Get total records for pagination
+        $totalQuery = $db->table('transactions')
+            ->where('YEAR(created_at)', $year)
+            ->where('MONTH(created_at)', $month)
+            ->countAllResults(false);
+        
         $data['transactions'] = $db->table('transactions')
             ->where('YEAR(created_at)', $year)
             ->where('MONTH(created_at)', $month)
-            ->orderBy('created_at', 'DESC')
-            ->limit(20)
+            ->orderBy('created_at', $orderBy)
+            ->limit($perPage, $offset)
             ->get()
             ->getResultArray();
+        
+        // Pagination data
+        $data['pager'] = [
+            'currentPage' => $page,
+            'perPage' => $perPage,
+            'total' => $totalQuery,
+            'totalPages' => ceil($totalQuery / $perPage)
+        ];
+        
+        $data['selectedSort'] = $sort;
 
         // Top 10 produk terlaris
         $data['topProducts'] = $db->table('transaction_items ti')
