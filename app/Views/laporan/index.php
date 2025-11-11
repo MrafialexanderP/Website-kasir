@@ -104,19 +104,27 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="bi bi-clock-history"></i> Riwayat Transaksi</h5>
-        <!-- Sort Filter -->
-        <div class="d-flex align-items-center">
-            <label class="text-white me-2 mb-0">
-                <i class="bi bi-sort-down"></i> Urutkan:
-            </label>
-            <select id="sortFilter" class="form-select form-select-sm" style="width: auto; min-width: 150px;" onchange="changeSortOrder(this.value)">
-                <option value="newest" <?= ($selectedSort ?? 'newest') === 'newest' ? 'selected' : '' ?>>
-                    <i class="bi bi-arrow-down"></i> Terbaru
-                </option>
-                <option value="oldest" <?= ($selectedSort ?? 'newest') === 'oldest' ? 'selected' : '' ?>>
-                    <i class="bi bi-arrow-up"></i> Terlama
-                </option>
-            </select>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Delete All Button -->
+            <?php if (!empty($transactions)): ?>
+                <button class="btn btn-danger btn-sm" onclick="deleteAllTransactions()">
+                    <i class="bi bi-trash"></i> Hapus Semua
+                </button>
+            <?php endif; ?>
+            <!-- Sort Filter -->
+            <div class="d-flex align-items-center">
+                <label class="text-white me-2 mb-0">
+                    <i class="bi bi-sort-down"></i> Urutkan:
+                </label>
+                <select id="sortFilter" class="form-select form-select-sm" style="width: auto; min-width: 150px;" onchange="changeSortOrder(this.value)">
+                    <option value="newest" <?= ($selectedSort ?? 'newest') === 'newest' ? 'selected' : '' ?>>
+                        <i class="bi bi-arrow-down"></i> Terbaru
+                    </option>
+                    <option value="oldest" <?= ($selectedSort ?? 'newest') === 'oldest' ? 'selected' : '' ?>>
+                        <i class="bi bi-arrow-up"></i> Terlama
+                    </option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="card-body">
@@ -126,11 +134,12 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="25%">Invoice</th>
-                            <th width="15%">Tanggal</th>
-                            <th width="15%">Waktu</th>
-                            <th width="15%" class="text-center">Total Qty</th>
-                            <th width="25%" class="text-end">Total Harga</th>
+                            <th width="20%">Invoice</th>
+                            <th width="13%">Tanggal</th>
+                            <th width="13%">Waktu</th>
+                            <th width="13%" class="text-center">Total Qty</th>
+                            <th width="20%" class="text-end">Total Harga</th>
+                            <th width="16%" class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -151,6 +160,11 @@
                                 <td class="text-end">
                                     <strong class="text-success">Rp <?= number_format($trx['total_price'], 0, ',', '.') ?></strong>
                                 </td>
+                                <td class="text-center">
+                                    <button class="btn btn-danger btn-sm" onclick="deleteTransaction(<?= $trx['id'] ?>, '<?= esc($trx['invoice_no']) ?>')" title="Hapus transaksi">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -161,6 +175,7 @@
                             <td class="text-end text-success">
                                 Rp <?= number_format($totalSales ?? 0, 0, ',', '.') ?>
                             </td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -413,6 +428,128 @@ function changeSortOrder(sortValue) {
     urlParams.set('sort', sortValue);
     urlParams.delete('page'); // Reset to page 1 when changing sort
     window.location.href = '<?= base_url('laporan') ?>?' + urlParams.toString();
+}
+
+// Function to delete single transaction
+async function deleteTransaction(id, invoiceNo) {
+    const result = await Swal.fire({
+        title: 'Hapus Transaksi?',
+        html: `Apakah Anda yakin ingin menghapus transaksi <strong>${invoiceNo}</strong>?<br><small class="text-muted">Tindakan ini tidak dapat dibatalkan.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch('<?= base_url('laporan/delete/') ?>' + id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                location.reload();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: data.message
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Terjadi kesalahan: ' + error.message
+            });
+        }
+    }
+}
+
+// Function to delete all transactions
+async function deleteAllTransactions() {
+    const month = <?= $selectedMonth ?>;
+    const year = <?= $selectedYear ?>;
+    const totalTransactions = <?= $totalTransactions ?? 0 ?>;
+    
+    const monthNames = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    
+    const result = await Swal.fire({
+        title: 'Hapus Semua Transaksi?',
+        html: `Apakah Anda yakin ingin menghapus <strong>SEMUA ${totalTransactions} transaksi</strong> di bulan <strong>${monthNames[month-1]} ${year}</strong>?<br><br><span class="text-danger fw-bold">⚠️ PERINGATAN: Tindakan ini tidak dapat dibatalkan!</span>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Semua',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true,
+        input: 'checkbox',
+        inputPlaceholder: 'Saya mengerti risikonya',
+        inputValidator: (result) => {
+            return !result && 'Anda harus mencentang untuk melanjutkan'
+        }
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch('<?= base_url('laporan/deleteAll') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    month: month,
+                    year: year
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                location.reload();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: data.message
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Terjadi kesalahan: ' + error.message
+            });
+        }
+    }
 }
 </script>
 <?= $this->endSection() ?>

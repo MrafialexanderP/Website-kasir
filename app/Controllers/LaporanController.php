@@ -181,4 +181,118 @@ class LaporanController extends BaseController
             ->setHeader('Content-Disposition', 'attachment; filename="Laporan_' . $monthName[$month] . '_' . $year . '.pdf"')
             ->setBody($dompdf->output());
     }
+
+    public function delete($id = null)
+    {
+        if (!$id) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ID transaksi tidak valid'
+            ]);
+        }
+
+        $db = \Config\Database::connect();
+        
+        try {
+            // Start transaction
+            $db->transStart();
+            
+            // Delete transaction items first
+            $db->table('transaction_items')
+                ->where('transaction_id', $id)
+                ->delete();
+            
+            // Delete transaction
+            $db->table('transactions')
+                ->where('id', $id)
+                ->delete();
+            
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Gagal menghapus transaksi'
+                ]);
+            }
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Transaksi berhasil dihapus'
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function deleteAll()
+    {
+        $month = $this->request->getPost('month');
+        $year = $this->request->getPost('year');
+        
+        if (!$month || !$year) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Parameter bulan dan tahun tidak valid'
+            ]);
+        }
+
+        $db = \Config\Database::connect();
+        
+        try {
+            // Start transaction
+            $db->transStart();
+            
+            // Get all transaction IDs for the selected month/year
+            $transactionIds = $db->table('transactions')
+                ->select('id')
+                ->where('YEAR(created_at)', $year)
+                ->where('MONTH(created_at)', $month)
+                ->get()
+                ->getResultArray();
+            
+            if (empty($transactionIds)) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Tidak ada transaksi untuk dihapus'
+                ]);
+            }
+            
+            $ids = array_column($transactionIds, 'id');
+            
+            // Delete transaction items first
+            $db->table('transaction_items')
+                ->whereIn('transaction_id', $ids)
+                ->delete();
+            
+            // Delete transactions
+            $db->table('transactions')
+                ->whereIn('id', $ids)
+                ->delete();
+            
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Gagal menghapus semua transaksi'
+                ]);
+            }
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => count($ids) . ' transaksi berhasil dihapus'
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+    }
 }
