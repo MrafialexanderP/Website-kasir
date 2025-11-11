@@ -21,7 +21,7 @@ class TransactionController extends BaseController
         }
 
         if (empty($cart) || !is_array($cart)) {
-            return $this->response->setStatusCode(400)->setJSON(['error' => 'Cart invalid or empty']);
+            return $this->response->setStatusCode(400)->setJSON(['success' => false, 'error' => 'Cart invalid or empty']);
         }
 
         $db->transStart();
@@ -31,11 +31,11 @@ class TransactionController extends BaseController
             $product = $productModel->find((int)$item['product_id']);
             if (!$product) {
                 $db->transRollback();
-                return $this->response->setStatusCode(404)->setJSON(['error' => 'Product not found']);
+                return $this->response->setStatusCode(404)->setJSON(['success' => false, 'error' => 'Product not found']);
             }
             if ($product['stock'] < (int)$item['qty']) {
                 $db->transRollback();
-                return $this->response->setStatusCode(400)->setJSON(['error' => 'Stok tidak cukup for ' . $product['name']]);
+                return $this->response->setStatusCode(400)->setJSON(['success' => false, 'error' => 'Stok tidak cukup untuk ' . $product['name']]);
             }
 
             // atomic decrease
@@ -47,7 +47,7 @@ class TransactionController extends BaseController
 
             if ($db->affectedRows() === 0) {
                 $db->transRollback();
-                return $this->response->setStatusCode(409)->setJSON(['error' => 'Gagal mengupdate stok']);
+                return $this->response->setStatusCode(409)->setJSON(['success' => false, 'error' => 'Gagal mengupdate stok']);
             }
 
             // fill price/subtotal for later
@@ -82,7 +82,7 @@ class TransactionController extends BaseController
 
         $db->transComplete();
         if ($db->transStatus() === false) {
-            return $this->response->setStatusCode(500)->setJSON(['error' => 'Gagal menyimpan transaksi']);
+            return $this->response->setStatusCode(500)->setJSON(['success' => false, 'error' => 'Gagal menyimpan transaksi']);
         }
 
         return $this->response->setJSON(['success' => true, 'invoice' => $invoice, 'transaction_id' => $transactionId]);

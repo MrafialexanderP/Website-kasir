@@ -92,3 +92,55 @@ in VENDORPATH\codeigniter4\framework\system\Exceptions\FrameworkException.php on
  8 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
  9 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
 10 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+CRITICAL - 2025-11-11 10:34:05 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "welcome_message.php"
+[Method: GET, Route: /]
+in VENDORPATH\codeigniter4\framework\system\Exceptions\FrameworkException.php on line 39.
+ 1 VENDORPATH\codeigniter4\framework\system\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('welcome_message.php')
+ 2 VENDORPATH\codeigniter4\framework\system\Common.php(1167): CodeIgniter\View\View->render('welcome_message', [], true)
+ 3 APPPATH\Controllers\Home.php(8): view('welcome_message')
+ 4 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Home->index()
+ 5 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+CRITICAL - 2025-11-11 10:34:06 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "welcome_message.php"
+[Method: GET, Route: /]
+in VENDORPATH\codeigniter4\framework\system\Exceptions\FrameworkException.php on line 39.
+ 1 VENDORPATH\codeigniter4\framework\system\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('welcome_message.php')
+ 2 VENDORPATH\codeigniter4\framework\system\Common.php(1167): CodeIgniter\View\View->render('welcome_message', [], true)
+ 3 APPPATH\Controllers\Home.php(8): view('welcome_message')
+ 4 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Home->index()
+ 5 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+CRITICAL - 2025-11-11 10:35:39 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "welcome_message.php"
+[Method: GET, Route: /]
+in VENDORPATH\codeigniter4\framework\system\Exceptions\FrameworkException.php on line 39.
+ 1 VENDORPATH\codeigniter4\framework\system\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('welcome_message.php')
+ 2 VENDORPATH\codeigniter4\framework\system\Common.php(1167): CodeIgniter\View\View->render('welcome_message', [], true)
+ 3 APPPATH\Controllers\Home.php(8): view('welcome_message')
+ 4 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Home->index()
+ 5 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+CRITICAL - 2025-11-11 10:35:40 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "welcome_message.php"
+[Method: GET, Route: /]
+in VENDORPATH\codeigniter4\framework\system\Exceptions\FrameworkException.php on line 39.
+ 1 VENDORPATH\codeigniter4\framework\system\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('welcome_message.php')
+ 2 VENDORPATH\codeigniter4\framework\system\Common.php(1167): CodeIgniter\View\View->render('welcome_message', [], true)
+ 3 APPPATH\Controllers\Home.php(8): view('welcome_message')
+ 4 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Home->index()
+ 5 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')

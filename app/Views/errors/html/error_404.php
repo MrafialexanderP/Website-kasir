@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>404 - Page Not Found</title>
+    <title>404 - Page tidak ketemu/title>
 </head>
 <body>
     <h1>404 - Page Not Found</h1>

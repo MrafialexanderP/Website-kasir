@@ -8,17 +8,19 @@ class ProductController extends BaseController
     public function index()
     {
         $model = new ProductModel();
-        $products = $model->findAll();
-        return $this->response->setJSON($products);
+        $data['products'] = $model->findAll();
+        $data['title'] = 'Katalog Produk';
+        return view('products/index', $data);
     }
 
     public function store()
     {
         $model = new ProductModel();
-        $data = $this->request->getJSON(true) ?: $this->request->getPost();
+        $data = $this->request->getPost();
 
         if (empty($data['name']) || !isset($data['price'])) {
-            return $this->response->setStatusCode(400)->setJSON(['error' => 'Invalid input']);
+            session()->setFlashdata('error', 'Nama dan harga produk wajib diisi!');
+            return redirect()->to('/products');
         }
 
         $insertId = $model->insert([
@@ -29,16 +31,59 @@ class ProductController extends BaseController
             'created_at' => date('Y-m-d H:i:s'),
         ]);
 
-        return $this->response->setJSON(['success' => true, 'id' => $insertId]);
+        if ($insertId) {
+            session()->setFlashdata('success', 'Produk berhasil ditambahkan!');
+        } else {
+            session()->setFlashdata('error', 'Gagal menambahkan produk.');
+        }
+        
+        return redirect()->to('/products');
+    }
+
+    public function update()
+    {
+        $model = new ProductModel();
+        $data = $this->request->getPost();
+        $id = $data['id'] ?? null;
+
+        if (!$id) {
+            session()->setFlashdata('error', 'ID produk tidak valid.');
+            return redirect()->to('/products');
+        }
+
+        $updated = $model->update($id, [
+            'sku' => $data['sku'] ?? null,
+            'name' => $data['name'],
+            'price' => $data['price'],
+            'stock' => $data['stock'],
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        if ($updated) {
+            session()->setFlashdata('success', 'Produk berhasil diupdate!');
+        } else {
+            session()->setFlashdata('error', 'Gagal mengupdate produk.');
+        }
+
+        return redirect()->to('/products');
     }
 
     public function delete($id = null)
     {
-        if (!$id) return $this->response->setStatusCode(400)->setJSON(['error' => 'Missing id']);
+        if (!$id) {
+            session()->setFlashdata('error', 'ID produk tidak valid.');
+            return redirect()->to('/products');
+        }
 
         $model = new ProductModel();
         $deleted = $model->delete((int)$id);
-        if ($deleted) return $this->response->setJSON(['success' => true]);
-        return $this->response->setStatusCode(404)->setJSON(['error' => 'Not found']);
+        
+        if ($deleted) {
+            session()->setFlashdata('success', 'Produk berhasil dihapus!');
+        } else {
+            session()->setFlashdata('error', 'Gagal menghapus produk.');
+        }
+        
+        return redirect()->to('/products');
     }
 }
