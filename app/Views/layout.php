@@ -415,6 +415,9 @@
                     <a class="nav-link <?= (uri_string() == 'laporan') ? 'active' : '' ?>" href="<?= base_url('laporan') ?>">
                         <i class="bi bi-graph-up"></i> Laporan
                     </a>
+                    <a class="nav-link <?= (uri_string() == 'about') ? 'active' : '' ?>" href="<?= base_url('about') ?>">
+                        <i class="bi bi-info-circle"></i> Tentang
+                    </a>
                 </nav>
                 
                 <!-- User Info & Logout -->

@@ -29,3 +29,6 @@ $routes->post('transactions/store', 'TransactionController::store', ['filter' =>
 // Laporan routes
 $routes->get('laporan', 'LaporanController::index', ['filter' => 'auth']);
 $routes->get('laporan/exportPdf', 'LaporanController::exportPdf', ['filter' => 'auth']);
+
+// About routes
+$routes->get('about', 'AboutController::index', ['filter' => 'auth']);
