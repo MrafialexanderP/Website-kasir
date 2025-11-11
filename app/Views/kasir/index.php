@@ -1,7 +1,9 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<h2 class="mb-4"><i class="bi bi-cart3"></i> Kasir (Point of Sale)</h2>
+<div class="mb-4">
+    <h1 class="page-title"><i class="bi bi-cart3"></i> Kasir (Point of Sale)</h1>
+</div>
 
 <?php if (session()->getFlashdata('success')): ?>
     <div class="alert alert-success alert-dismissible fade show">

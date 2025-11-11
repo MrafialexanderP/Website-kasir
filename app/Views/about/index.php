@@ -93,6 +93,7 @@
                     <span class="badge bg-info">MySQL</span>
                     <span class="badge bg-success">Bootstrap 5</span>
                     <span class="badge bg-warning text-dark">JavaScript</span>
+                    <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">SweetAlert2</span>
                 </div>
             </div>
         </div>
