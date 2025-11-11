@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+/*
+ * CodeIgniter CLI (v4.6+)
+ */
+
+// Refuse to run when called from php-cgi
+if (strpos(PHP_SAPI, 'cgi') === 0) {
+    exit("The cli tool is not supported when running php-cgi. It needs php-cli to function!\n\n");
+}
+
+// We want errors to be shown when using it from the CLI.
+error_reporting(-1);
+ini_set('display_errors', '1');
+
+// Path constants
+define('ROOTPATH', __DIR__ . DIRECTORY_SEPARATOR);
+define('FCPATH', ROOTPATH . 'public' . DIRECTORY_SEPARATOR);
+define('APPPATH', ROOTPATH . 'app' . DIRECTORY_SEPARATOR);
+define('WRITEPATH', ROOTPATH . 'writable' . DIRECTORY_SEPARATOR);
+define('SYSTEMPATH', ROOTPATH . 'vendor/codeigniter4/framework/system' . DIRECTORY_SEPARATOR);
+define('COMPOSER_PATH', ROOTPATH . 'vendor/autoload.php');
+
+// Ensure the current directory is pointing to the front controller's directory
+chdir(FCPATH);
+
+// Load our paths config file
+require APPPATH . 'Config/Paths.php';
+
+// Get our Paths instance
+$paths = new Config\Paths();
+
+// Bootstrap the application
+require SYSTEMPATH . 'Boot.php';
+$boot = CodeIgniter\Boot::bootSpark($paths);
+
+exit($boot);
+

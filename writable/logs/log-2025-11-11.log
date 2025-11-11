@@ -1,0 +1,94 @@
+ERROR - 2025-11-11 10:28:08 --> Error connecting to the database: mysqli_sql_exception: Unknown database 'kasir_db' in C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('localhost', 'root', Object(SensitiveParameterValue), 'kasir_db', 3306, '', 0)
+#1 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#3 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(1525): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(1545): CodeIgniter\Database\BaseConnection->listTables()
+#5 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MigrationRunner.php(768): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#6 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MigrationRunner.php(162): CodeIgniter\Database\MigrationRunner->ensureTable()
+#7 C:\Website-kasir\vendor\codeigniter4\framework\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#11 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 C:\Website-kasir\spark(35): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Unknown database 'kasir_db' in C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:246
+Stack trace:
+#0 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#2 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(1525): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(1545): CodeIgniter\Database\BaseConnection->listTables()
+#4 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MigrationRunner.php(768): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#5 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MigrationRunner.php(162): CodeIgniter\Database\MigrationRunner->ensureTable()
+#6 C:\Website-kasir\vendor\codeigniter4\framework\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#7 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Migrate->run(Array)
+#8 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate', Array)
+#9 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#10 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#11 C:\Website-kasir\spark(35): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#12 {main}
+CRITICAL - 2025-11-11 10:28:08 --> ErrorException: require(C:\Website-kasir\app\Views/errors/cli/error_exception.php): Failed to open stream: No such file or directory
+[Method: CLI, Route: migrate]
+in VENDORPATH\codeigniter4\framework\system\CLI\BaseCommand.php on line 133.
+ 1 VENDORPATH\codeigniter4\framework\system\CLI\BaseCommand.php(133): CodeIgniter\Debug\Exceptions->errorHandler(2, 'require(C:\\Website-kasir\\app\\Views/errors/cli/error_exception.php): Failed to open stream: No such file or directory', 'C:\\Website-kasir\\vendor\\codeigniter4\\framework\\system\\CLI\\BaseCommand.php', 133)
+ 2 VENDORPATH\codeigniter4\framework\system\CLI\BaseCommand.php(133): require()
+ 3 VENDORPATH\codeigniter4\framework\system\Commands\Database\Migrate.php(99): CodeIgniter\CLI\BaseCommand->showError(Object(CodeIgniter\Database\Exceptions\DatabaseException))
+ 4 VENDORPATH\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Migrate->run([])
+ 5 VENDORPATH\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate', [])
+ 6 VENDORPATH\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+ 8 ROOTPATH\spark(35): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+ERROR - 2025-11-11 10:28:18 --> Error connecting to the database: mysqli_sql_exception: Unknown database 'kasir_db' in C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('localhost', 'root', Object(SensitiveParameterValue), 'kasir_db', 3306, '', 0)
+#1 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#3 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(1525): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 C:\Website-kasir\vendor\codeigniter4\framework\system\Commands\Database\ShowTableInfo.php(121): CodeIgniter\Database\BaseConnection->listTables()
+#5 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\ShowTableInfo->run(Array)
+#6 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('db:table', Array)
+#7 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#8 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#9 C:\Website-kasir\spark(35): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#10 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Unknown database 'kasir_db' in C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:246
+Stack trace:
+#0 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#2 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(1525): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 C:\Website-kasir\vendor\codeigniter4\framework\system\Commands\Database\ShowTableInfo.php(121): CodeIgniter\Database\BaseConnection->listTables()
+#4 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\ShowTableInfo->run(Array)
+#5 C:\Website-kasir\vendor\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('db:table', Array)
+#6 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#7 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#8 C:\Website-kasir\spark(35): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#9 {main}
+CRITICAL - 2025-11-11 10:28:18 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Unknown database 'kasir_db'
+[Method: CLI, Route: db:table/migrations]
+in VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php on line 465.
+ 1 VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+ 2 VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php(1525): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FROM `kasir_db`')
+ 3 VENDORPATH\codeigniter4\framework\system\Commands\Database\ShowTableInfo.php(121): CodeIgniter\Database\BaseConnection->listTables()
+ 4 VENDORPATH\codeigniter4\framework\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\ShowTableInfo->run([...])
+ 5 VENDORPATH\codeigniter4\framework\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('db:table', [...])
+ 6 VENDORPATH\codeigniter4\framework\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+ 8 ROOTPATH\spark(35): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+CRITICAL - 2025-11-11 10:29:27 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "welcome_message.php"
+[Method: GET, Route: /]
+in VENDORPATH\codeigniter4\framework\system\Exceptions\FrameworkException.php on line 39.
+ 1 VENDORPATH\codeigniter4\framework\system\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('welcome_message.php')
+ 2 VENDORPATH\codeigniter4\framework\system\Common.php(1167): CodeIgniter\View\View->render('welcome_message', [], true)
+ 3 APPPATH\Controllers\Home.php(8): view('welcome_message')
+ 4 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Home->index()
+ 5 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 6 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
