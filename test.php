@@ -1,0 +1,1 @@
+hai, saya adala mahasiswa akuntansi angkastan 60 yang dimana saya membuat aplikasi kasir berbasis website yang dimana saya memakai bahasa codeigniter, untuk fungsi nya ada katalog, bisa add dan remove barang, liat stock barang, laporan bulanan dan selayaknya aplikasi kasir pada umumnya itu bagaimana, lalu bisa terhubung dengan database 
