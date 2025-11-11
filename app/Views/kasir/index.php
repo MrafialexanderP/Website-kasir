@@ -93,58 +93,84 @@
 <div class="row mt-4 d-none" id="invoiceSection">
     <div class="col-12">
         <div class="card shadow-lg border-0">
-            <div class="card-header bg-success text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><i class="bi bi-check-circle-fill"></i> Transaksi Berhasil</h4>
-                    <button class="btn btn-light btn-sm" onclick="hideInvoice()">
-                        <i class="bi bi-x-circle"></i> Tutup
-                    </button>
-                </div>
-            </div>
             <div class="card-body p-4">
                 <div class="text-center mb-4">
-                    <i class="bi bi-receipt text-success" style="font-size: 4rem;"></i>
-                    <h5 class="mt-3 text-success">Invoice Transaksi</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-muted mb-0"><i class="bi bi-check-circle-fill text-success"></i> Transaksi Berhasil</h5>
+                        <button type="button" class="btn-close no-print" onclick="hideInvoice()" aria-label="Close"></button>
+                    </div>
+                    <div class="invoice-icon mb-3">
+                        <i class="bi bi-receipt text-success" style="font-size: 3rem;"></i>
+                    </div>
                 </div>
                 
-                <div class="row">
-                    <div class="col-md-8 offset-md-2">
-                        <table class="table table-borderless table-lg">
-                            <tr>
-                                <td width="40%"><strong>Invoice:</strong></td>
-                                <td class="text-end"><span class="badge bg-primary fs-5" id="invoiceNo"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Tanggal:</strong></td>
-                                <td class="text-end fs-6" id="transactionDate"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Waktu:</strong></td>
-                                <td class="text-end"><span class="badge bg-info fs-6" id="transactionTime"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Total Item:</strong></td>
-                                <td class="text-end fs-5" id="invoiceTotalItems"></td>
-                            </tr>
-                            <tr class="border-top">
-                                <td><strong>Total Bayar:</strong></td>
-                                <td class="text-end"><h3 class="text-success mb-0" id="invoiceTotal"></h3></td>
-                            </tr>
-                        </table>
-                        
-                        <div class="alert alert-success mb-3">
-                            <i class="bi bi-info-circle"></i> Terima kasih atas transaksi Anda!
+                <div class="invoice-details mb-3">
+                    <div class="row mb-2">
+                        <div class="col-5 text-start">
+                            <strong>Invoice:</strong>
                         </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-primary btn-lg" onclick="window.print()">
-                                <i class="bi bi-printer"></i> Print Invoice
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="hideInvoice()">
-                                <i class="bi bi-x-circle"></i> Tutup & Transaksi Baru
-                            </button>
+                        <div class="col-7 text-end">
+                            <span class="badge bg-light text-dark border" id="invoiceNo" style="font-size: 0.9rem;"></span>
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-5 text-start">
+                            <strong>Tanggal:</strong>
+                        </div>
+                        <div class="col-7 text-end" id="transactionDate"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5 text-start">
+                            <strong>Waktu:</strong>
+                        </div>
+                        <div class="col-7 text-end" id="transactionTime"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5 text-start">
+                            <strong>Total Item:</strong>
+                        </div>
+                        <div class="col-7 text-end" id="invoiceTotalItems"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 text-start">
+                            <strong>Total Bayar:</strong>
+                        </div>
+                        <div class="col-7 text-end">
+                            <strong class="text-success fs-5" id="invoiceTotal"></strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info text-center mb-3" role="alert">
+                    <i class="bi bi-info-circle"></i> Terima kasih atas transaksi Anda!
+                </div>
+                
+                <div class="d-grid gap-2 no-print">
+                    <button type="button" class="btn btn-outline-secondary" onclick="hideInvoice()">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="printInvoice()">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                </div>
+                
+                <!-- Hidden detailed items table for print only -->
+                <div class="print-only" style="display: none;">
+                    <h6 class="fw-bold mb-3 mt-4">Detail Pembelian:</h6>
+                    <table class="table table-bordered table-sm" id="invoiceItemsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="8%" class="text-center">No</th>
+                                <th width="45%">Nama Produk</th>
+                                <th width="15%" class="text-center">Qty</th>
+                                <th width="16%" class="text-end">Harga</th>
+                                <th width="16%" class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItemsBody">
+                            <!-- Items will be inserted here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -176,25 +202,253 @@ body.modal-open {
 }
 
 @media print {
-    /* Hide everything except invoice when printing */
+    /* Page setup */
+    @page {
+        size: A4;
+        margin: 8mm;
+    }
+    
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+    
+    /* Hide everything except invoice using visibility */
     body * {
         visibility: hidden;
     }
-    #invoiceSection, #invoiceSection * {
+    
+    /* Show invoice and all its children */
+    #invoiceSection,
+    #invoiceSection * {
         visibility: visible;
     }
+    
+    /* Force invoice to top of page with max height */
     #invoiceSection {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        page-break-after: always !important;
     }
-    #invoiceSection .btn {
+    
+    #invoiceSection .row {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #invoiceSection .col-12 {
+        padding: 0 !important;
+    }
+    
+    /* Hide buttons */
+    .no-print,
+    .btn-close {
         display: none !important;
     }
+    
+    /* Show print-only content */
+    .print-only {
+        display: block !important;
+    }
+    
+    /* Card styling - maximum compact for single page */
+    #invoiceSection .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    #invoiceSection .card-body {
+        padding: 5px !important;
+        margin: 0 !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+    }
+    
+    /* Hide icon in print to save space */
+    #invoiceSection .invoice-icon {
+        display: none !important;
+    }
+    
+    /* Title - minimal */
+    #invoiceSection h5 {
+        font-size: 0.75rem !important;
+        margin: 1px 0 !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    #invoiceSection .mb-3 {
+        margin-bottom: 3px !important;
+    }
+    
+    /* Invoice details - minimal */
+    #invoiceSection .invoice-details {
+        margin-bottom: 3px !important;
+        margin-top: 0 !important;
+        font-size: 0.7rem !important;
+    }
+    
+    #invoiceSection .invoice-details .row {
+        margin-bottom: 1px !important;
+        margin-top: 0 !important;
+        line-height: 1.1 !important;
+    }
+    
+    #invoiceSection .invoice-details .col-5,
+    #invoiceSection .invoice-details .col-7 {
+        padding: 0 2px !important;
+    }
+    
+    /* Badges - minimal */
+    #invoiceSection .badge {
+        border: 1px solid #ddd !important;
+        padding: 0px 4px !important;
+        margin: 0 !important;
+        background-color: #f8f9fa !important;
+        color: #000 !important;
+        font-size: 0.65rem !important;
+        line-height: 1.2 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    /* Text colors */
+    #invoiceSection .text-success {
+        color: #198754 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    #invoiceSection .text-muted {
+        color: #6c757d !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    /* Alert - minimal */
+    #invoiceSection .alert-info {
+        background-color: #cfe2ff !important;
+        border: 1px solid #9ec5fe !important;
+        color: #084298 !important;
+        padding: 3px !important;
+        margin: 3px 0 !important;
+        border-radius: 2px !important;
+        font-size: 0.7rem !important;
+        line-height: 1.2 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    /* Detail items table - minimal */
+    #invoiceSection .print-only h6 {
+        color: #000 !important;
+        font-weight: bold !important;
+        margin: 2px 0 !important;
+        padding: 0 !important;
+        font-size: 0.75rem !important;
+    }
+    
+    #invoiceSection .table {
+        border: 1px solid #000 !important;
+        border-collapse: collapse !important;
+        width: 100% !important;
+        font-size: 0.6rem !important;
+        margin: 0 !important;
+        line-height: 1.1 !important;
+    }
+    
+    #invoiceSection .table th,
+    #invoiceSection .table td {
+        border: 1px solid #000 !important;
+        padding: 1px !important;
+        margin: 0 !important;
+    }
+    
+    #invoiceSection .table thead th {
+        font-size: 0.6rem !important;
+        padding: 1px !important;
+    }
+    
+    #invoiceSection .table-light {
+        background-color: #f8f9fa !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    /* Font sizes - minimal */
+    #invoiceSection .fs-5 {
+        font-size: 0.75rem !important;
+    }
+    
+    #invoiceSection h5 {
+        font-size: 0.75rem !important;
+        margin: 1px 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Text alignment */
+    #invoiceSection .text-center {
+        text-align: center !important;
+    }
+    
+    #invoiceSection .text-end {
+        text-align: right !important;
+    }
+    
+    #invoiceSection .text-start {
+        text-align: left !important;
+    }
+    
+    /* Font weights */
+    #invoiceSection .fw-bold {
+        font-weight: bold !important;
+    }
+    
+    /* Icons - minimal */
+    #invoiceSection .bi-check-circle-fill {
+        color: #198754 !important;
+        font-size: 0.7rem !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    #invoiceSection .bi-info-circle {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Center and limit width */
+    #invoiceSection .card {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    /* Reduce all spacing to absolute minimum */
+    #invoiceSection .d-flex {
+        margin-bottom: 2px !important;
+    }
+    
+    #invoiceSection .text-center {
+        margin-bottom: 2px !important;
+    }
+
 }
 </style>
 <script>
+// Store cart items for invoice
+let invoiceItems = [];
 // Load cart from localStorage on page load
 let cart = JSON.parse(localStorage.getItem('kasirCart') || '[]');
 
@@ -386,7 +640,36 @@ function clearCart() {
 
 function hideInvoice() {
     document.getElementById('invoiceSection').classList.add('d-none');
+    invoiceItems = []; // Clear invoice items
     location.reload();
+}
+
+function printInvoice() {
+    window.print();
+}
+
+function fillInvoiceItems() {
+    const tbody = document.getElementById('invoiceItemsBody');
+    if (!tbody) {
+        console.error('Invoice items body not found!');
+        return;
+    }
+    
+    let html = '';
+    invoiceItems.forEach((item, index) => {
+        const subtotal = item.price * item.qty;
+        html += `
+            <tr>
+                <td class="text-center">${index + 1}</td>
+                <td>${item.name}</td>
+                <td class="text-center">${item.qty}</td>
+                <td class="text-end">Rp ${item.price.toLocaleString('id-ID')}</td>
+                <td class="text-end">Rp ${subtotal.toLocaleString('id-ID')}</td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
 }
 
 async function processTransaction() {
@@ -415,8 +698,9 @@ async function processTransaction() {
             const formattedDate = now.toLocaleDateString('id-ID', dateOptions);
             const formattedTime = now.toLocaleTimeString('id-ID', timeOptions);
             
-            // Get total items
+            // Get total items and save cart items for invoice
             const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            invoiceItems = [...cart]; // Save cart items before clearing
             
             // Fill invoice section with transaction details
             const invoiceNo = document.getElementById('invoiceNo');
@@ -431,6 +715,9 @@ async function processTransaction() {
                 transactionTime.textContent = formattedTime;
                 invoiceTotalItems.textContent = totalItems + ' item';
                 invoiceTotal.textContent = document.getElementById('totalPrice').textContent;
+                
+                // Fill invoice items table
+                fillInvoiceItems();
             } else {
                 console.error('Invoice elements not found!');
                 alert('Error: Invoice elements not found. Please refresh the page.');
