@@ -119,23 +119,12 @@
             background: #f8f9fa;
             min-height: 100vh;
             padding: 2rem;
-            border-radius: 30px 0 0 30px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            border-radius: 0; /* remove rounded purple corners */
+            box-shadow: none; /* remove inner shadow accent */
             position: relative;
         }
-        
-        .main-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            opacity: 0.05;
-            z-index: 0;
-        }
+        /* Remove decorative gradient bubble */
+        .main-content::before { display: none; }
         
         .main-content > * {
             position: relative;
@@ -419,36 +408,30 @@
                         <i class="bi bi-info-circle"></i> Tentang
                     </a>
                 </nav>
+
+                <!-- Sidebar User + Logout (Side by side) -->
+                <div class="px-3 pt-2 pb-4">
+                    <div class="d-flex gap-2">
+                        <div class="flex-grow-1 d-flex align-items-center shadow-sm px-3 py-2" style="border-radius:16px;">
+                            <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#667eea 0%, #764ba2 100%); display:flex; align-items:center; justify-content:center;">
+                                <i class="bi bi-person-circle text-white" style="font-size:1.3rem;"></i>
+                            </div>
+                            <div class="ms-2">
+                                <div class="fw-semibold text-white" style="font-size:0.9rem; line-height:1.2;">
+                                    <?= esc(session()->get('name') ?? 'User') ?>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="<?= base_url('logout') ?>" class="btn d-flex align-items-center justify-content-center shadow-sm" style="border-radius:16px; min-width:100px;  color:#fff; font-weight:600; border:none; outline:none;">
+                            <i class="bi bi-box-arrow-right me-1"></i> Logout
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Main Content -->
             <div class="col-md-10 col-lg-10 main-content">
-                <!-- User Info & Logout (Top Right) -->
-                <div style="position: fixed; top: 20px; right: 30px; z-index: 1000;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="d-flex align-items-center bg-white shadow-sm px-3 py-2" style="border-radius: 50px;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-person-circle text-white" style="font-size: 1.3rem;"></i>
-                            </div>
-                            <div class="ms-2 me-2">
-                                <div class="fw-semibold" style="font-size: 0.85rem; color: #1a1a2e;"><?= session()->get('name') ?? 'User' ?></div>
-                                <div style="font-size: 0.7rem;">
-                                    <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 0.65rem;">
-                                        <?= ucfirst(session()->get('role') ?? 'kasir') ?>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="<?= base_url('logout') ?>" class="btn shadow-sm" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; border-radius: 50px; padding: 0.6rem 1.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(235, 51, 73, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Content with top padding -->
-                <div style="padding-top: 80px;">
-                    <?= $this->renderSection('content') ?>
-                </div>
+                <?= $this->renderSection('content') ?>
             </div>
         </div>
     </div>
