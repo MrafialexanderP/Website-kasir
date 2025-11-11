@@ -1,11 +1,8 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="mb-4">
     <h1 class="page-title"><i class="bi bi-box-seam"></i> Katalog Produk</h1>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-        <i class="bi bi-plus-circle"></i> Tambah Produk
-    </button>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>
@@ -26,13 +23,13 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="row g-3">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-search text-primary"></i></span>
                     <input type="text" class="form-control" id="searchInput" placeholder="Cari nama atau SKU produk...">
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <select class="form-select" id="filterCategory">
                     <option value="">Semua Kategori</option>
                     <option value="Alat Tulis">Alat Tulis</option>
@@ -62,6 +59,11 @@
                     <option value="stock_asc">Stok Terendah</option>
                     <option value="stock_desc">Stok Tertinggi</option>
                 </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <i class="bi bi-plus-circle"></i> Tambah Produk
+                </button>
             </div>
         </div>
     </div>
@@ -681,9 +683,20 @@ function editProduct(id, sku, name, category, image, description, price, stock) 
 
 // Delete Product
 function deleteProduct(id, name) {
-    if (confirm('Hapus produk "' + name + '"?\n\nProduk yang sudah dihapus tidak dapat dikembalikan.')) {
-        window.location.href = '<?= base_url('products/delete/') ?>' + id;
-    }
+    Swal.fire({
+        title: 'Hapus produk?',
+        html: 'Produk <strong>' + name + '</strong> akan dihapus dan tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '<?= base_url('products/delete/') ?>' + id;
+        }
+    });
 }
 
 // Add to Quick Cart (Save to localStorage for Kasir page)

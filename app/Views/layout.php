@@ -419,38 +419,42 @@
                         <i class="bi bi-info-circle"></i> Tentang
                     </a>
                 </nav>
-                
-                <!-- User Info & Logout -->
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-shrink-0">
-                            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-person-circle text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-white fw-semibold" style="font-size: 0.9rem;"><?= session()->get('name') ?? 'User' ?></div>
-                            <div class="text-muted" style="font-size: 0.75rem;">
-                                <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                    <?= ucfirst(session()->get('role') ?? 'kasir') ?>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="<?= base_url('logout') ?>" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; border-radius: 10px; padding: 0.5rem;">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </a>
-                </div>
             </div>
 
             <!-- Main Content -->
             <div class="col-md-10 col-lg-10 main-content">
-                <?= $this->renderSection('content') ?>
+                <!-- User Info & Logout (Top Right) -->
+                <div style="position: fixed; top: 20px; right: 30px; z-index: 1000;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center bg-white shadow-sm px-3 py-2" style="border-radius: 50px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-person-circle text-white" style="font-size: 1.3rem;"></i>
+                            </div>
+                            <div class="ms-2 me-2">
+                                <div class="fw-semibold" style="font-size: 0.85rem; color: #1a1a2e;"><?= session()->get('name') ?? 'User' ?></div>
+                                <div style="font-size: 0.7rem;">
+                                    <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 0.65rem;">
+                                        <?= ucfirst(session()->get('role') ?? 'kasir') ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="<?= base_url('logout') ?>" class="btn shadow-sm" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; border-radius: 50px; padding: 0.6rem 1.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(235, 51, 73, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Content with top padding -->
+                <div style="padding-top: 80px;">
+                    <?= $this->renderSection('content') ?>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>

@@ -476,7 +476,12 @@ function addToCart(id, name, price, maxStock) {
             existing.qty++;
             showToast(`${name} ditambahkan (${existing.qty})`, 'success');
         } else {
-            alert(`Stok ${name} tidak mencukupi! Maksimal ${maxStock} item.`);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stok tidak cukup',
+                text: `Stok ${name} tidak mencukupi! Maksimal ${maxStock} item.`,
+                confirmButtonText: 'Mengerti'
+            });
             return;
         }
     } else {
@@ -521,7 +526,7 @@ function showToast(message, type = 'info') {
     }, 2000);
 }
 
-function updateQty(id, change) {
+async function updateQty(id, change) {
     const item = cart.find(i => i.id === id);
     if (!item) return;
     
@@ -529,13 +534,30 @@ function updateQty(id, change) {
     
     // Validasi qty minimal
     if (newQty <= 0) {
-        if (confirm(`Hapus ${item.name} dari keranjang?`)) {
+        const res = await Swal.fire({
+            title: 'Hapus item?',
+            html: `Hapus <strong>${item.name}</strong> dari keranjang?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280'
+        });
+        if (res.isConfirmed) {
             cart = cart.filter(i => i.id !== id);
+        } else {
+            return;
         }
     } 
     // Validasi qty maksimal (stok)
     else if (newQty > item.maxStock) {
-        alert(`Stok ${item.name} tidak mencukupi! Maksimal ${item.maxStock} item.`);
+        Swal.fire({
+            icon: 'warning',
+            title: 'Stok tidak cukup',
+            text: `Stok ${item.name} tidak mencukupi! Maksimal ${item.maxStock} item.`,
+            confirmButtonText: 'Mengerti'
+        });
         return;
     } 
     // Update qty
@@ -630,8 +652,19 @@ function updateCartInfo(qty, total) {
     }
 }
 
-function clearCart() {
-    if (cart.length > 0 && confirm('Kosongkan keranjang?')) {
+async function clearCart() {
+    if (cart.length === 0) return;
+    const res = await Swal.fire({
+        title: 'Kosongkan keranjang?',
+        text: 'Semua item akan dihapus dari keranjang.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, kosongkan',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280'
+    });
+    if (res.isConfirmed) {
         cart = [];
         localStorage.removeItem('kasirCart');
         renderCart();
@@ -720,7 +753,11 @@ async function processTransaction() {
                 fillInvoiceItems();
             } else {
                 console.error('Invoice elements not found!');
-                alert('Error: Invoice elements not found. Please refresh the page.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal membuat invoice',
+                    text: 'Elemen invoice tidak ditemukan. Silakan muat ulang halaman.'
+                });
                 return;
             }
             
@@ -742,10 +779,18 @@ async function processTransaction() {
                 console.error('Invoice section not found!');
             }
         } else {
-            alert('Error: ' + result.error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Transaksi gagal',
+                text: result.error || 'Terjadi kesalahan saat memproses transaksi.'
+            });
         }
     } catch (error) {
-        alert('Terjadi kesalahan: ' + error.message);
+        Swal.fire({
+            icon: 'error',
+            title: 'Terjadi kesalahan',
+            text: error.message
+        });
     }
 }
 </script>

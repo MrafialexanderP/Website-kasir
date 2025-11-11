@@ -633,3 +633,128 @@ DEBUG - 2025-11-11 19:30:46 --> Session: Class initialized using 'CodeIgniter\Se
 DEBUG - 2025-11-11 19:30:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2025-11-11 19:31:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2025-11-11 19:33:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:33:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:36:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:36:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:39:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:39:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:40:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:40:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:40:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-11 19:40:57 --> mysqli_sql_exception: Duplicate entry 'ATK001' for key 'sku' in C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `pr...', 0)
+#1 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pr...')
+#2 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pr...')
+#3 C:\Website-kasir\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pr...', Array, false)
+#4 C:\Website-kasir\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 C:\Website-kasir\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 C:\Website-kasir\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 C:\Website-kasir\app\Controllers\ProductController.php(72): CodeIgniter\Model->insert(Array)
+#8 C:\Website-kasir\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\ProductController->store()
+#9 C:\Website-kasir\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProductController))
+#10 C:\Website-kasir\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 C:\Website-kasir\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 C:\Website-kasir\public\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 C:\Website-kasir\vendor\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasi...')
+#15 {main}
+CRITICAL - 2025-11-11 19:40:57 --> CodeIgniter\Database\Exceptions\DatabaseException: Duplicate entry 'ATK001' for key 'sku'
+[Method: POST, Route: products/store]
+in VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php on line 684.
+ 1 VENDORPATH\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (:sku:, :name:, :category:, :image:, :description:, :price:, :stock:, :created_at:)', [...], false)
+ 2 VENDORPATH\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+ 3 VENDORPATH\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert([...])
+ 4 VENDORPATH\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert([...], true)
+ 5 APPPATH\Controllers\ProductController.php(72): CodeIgniter\Model->insert([...])
+ 6 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\ProductController->store()
+ 7 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProductController))
+ 8 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+CRITICAL - 2025-11-11 19:40:57 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Duplicate entry 'ATK001' for key 'sku'
+in VENDORPATH\codeigniter4\framework\system\Database\MySQLi\Connection.php on line 332.
+ 1 VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (\'ATK001\', \'Lem Aibon\', \'Perekat\', NULL, \'buat mabok\', \'200000\', \'5\', \'2025-11-11 19:40:57\')')
+ 2 VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (\'ATK001\', \'Lem Aibon\', \'Perekat\', NULL, \'buat mabok\', \'200000\', \'5\', \'2025-11-11 19:40:57\')')
+ 3 VENDORPATH\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (:sku:, :name:, :category:, :image:, :description:, :price:, :stock:, :created_at:)', [...], false)
+ 4 VENDORPATH\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+ 5 VENDORPATH\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert([...])
+ 6 VENDORPATH\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert([...], true)
+ 7 APPPATH\Controllers\ProductController.php(72): CodeIgniter\Model->insert([...])
+ 8 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\ProductController->store()
+ 9 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProductController))
+10 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+CRITICAL - 2025-11-11 19:40:57 --> [Caused by] mysqli_sql_exception: Duplicate entry 'ATK001' for key 'sku'
+in VENDORPATH\codeigniter4\framework\system\Database\MySQLi\Connection.php on line 327.
+ 1 VENDORPATH\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (\'ATK001\', \'Lem Aibon\', \'Perekat\', NULL, \'buat mabok\', \'200000\', \'5\', \'2025-11-11 19:40:57\')', 0)
+ 2 VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (\'ATK001\', \'Lem Aibon\', \'Perekat\', NULL, \'buat mabok\', \'200000\', \'5\', \'2025-11-11 19:40:57\')')
+ 3 VENDORPATH\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (\'ATK001\', \'Lem Aibon\', \'Perekat\', NULL, \'buat mabok\', \'200000\', \'5\', \'2025-11-11 19:40:57\')')
+ 4 VENDORPATH\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `products` (`sku`, `name`, `category`, `image`, `description`, `price`, `stock`, `created_at`) VALUES (:sku:, :name:, :category:, :image:, :description:, :price:, :stock:, :created_at:)', [...], false)
+ 5 VENDORPATH\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+ 6 VENDORPATH\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert([...])
+ 7 VENDORPATH\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert([...], true)
+ 8 APPPATH\Controllers\ProductController.php(72): CodeIgniter\Model->insert([...])
+ 9 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\ProductController->store()
+10 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ProductController))
+11 VENDORPATH\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 VENDORPATH\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 VENDORPATH\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(30): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 VENDORPATH\codeigniter4\framework\system\rewrite.php(44): require_once('C:\\Website-kasir\\public\\index.php')
+DEBUG - 2025-11-11 19:41:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:41:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:42:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:42:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:43:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:43:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:43:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:43:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:43:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:43:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:49:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:49:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:50:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:51:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:51:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:52:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:53:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:55:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:55:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:56:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:57:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:57:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:57:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:57:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:57:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:57:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:58:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:58:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:58:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-11 19:58:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
