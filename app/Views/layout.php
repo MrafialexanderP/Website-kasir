@@ -416,6 +416,28 @@
                         <i class="bi bi-graph-up"></i> Laporan
                     </a>
                 </nav>
+                
+                <!-- User Info & Logout -->
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-person-circle text-white" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-white fw-semibold" style="font-size: 0.9rem;"><?= session()->get('name') ?? 'User' ?></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">
+                                <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <?= ucfirst(session()->get('role') ?? 'kasir') ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="<?= base_url('logout') ?>" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; border-radius: 10px; padding: 0.5rem;">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
             </div>
 
             <!-- Main Content -->
