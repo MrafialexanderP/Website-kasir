@@ -21,3 +21,4 @@ $routes->post('transactions/store', 'TransactionController::store');
 
 // Laporan routes
 $routes->get('laporan', 'LaporanController::index');
+$routes->get('laporan/exportPdf', 'LaporanController::exportPdf');

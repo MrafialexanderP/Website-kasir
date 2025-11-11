@@ -7,7 +7,7 @@ class ProductModel extends Model
 {
     protected $table      = 'products';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['sku','name','price','stock','created_at','updated_at'];
+    protected $allowedFields = ['sku','name','category','image','description','price','stock','created_at','updated_at'];
     protected $useTimestamps = false;
 
     /**

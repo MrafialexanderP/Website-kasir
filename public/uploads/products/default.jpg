@@ -1,0 +1,6 @@
+<!-- Placeholder image untuk produk tanpa gambar -->
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#e9ecef"/>
+  <text x="50%" y="45%" font-family="Arial" font-size="16" fill="#6c757d" text-anchor="middle">Gambar Produk</text>
+  <text x="50%" y="55%" font-family="Arial" font-size="12" fill="#adb5bd" text-anchor="middle">Belum Tersedia</text>
+</svg>

@@ -18,23 +18,63 @@ class ProductController extends BaseController
         $model = new ProductModel();
         $data = $this->request->getPost();
 
-        if (empty($data['name']) || !isset($data['price'])) {
-            session()->setFlashdata('error', 'Nama dan harga produk wajib diisi!');
+        // Validasi input
+        if (empty($data['name']) || !isset($data['price']) || empty($data['category'])) {
+            session()->setFlashdata('error', 'Nama, kategori, dan harga produk wajib diisi!');
             return redirect()->to('/products');
         }
 
-        $insertId = $model->insert([
+        // Handle image upload
+        $imageName = null;
+        $file = $this->request->getFile('image');
+        
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            // Validasi ukuran file (max 2MB)
+            if ($file->getSize() > 2048000) {
+                session()->setFlashdata('error', 'Ukuran gambar maksimal 2MB!');
+                return redirect()->to('/products');
+            }
+            
+            // Validasi ekstensi file
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            if (!in_array(strtolower($file->getExtension()), $allowedExtensions)) {
+                session()->setFlashdata('error', 'Format gambar harus JPG, PNG, atau GIF!');
+                return redirect()->to('/products');
+            }
+            
+            $imageName = $file->getRandomName();
+            $uploadPath = FCPATH . 'uploads/products';
+            
+            // Pastikan folder exists
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+            
+            if (!$file->move($uploadPath, $imageName)) {
+                log_message('error', 'Failed to upload image: ' . $file->getErrorString());
+                session()->setFlashdata('error', 'Gagal mengupload gambar: ' . $file->getErrorString());
+                return redirect()->to('/products');
+            }
+        }
+
+        // Insert data
+        $insertData = [
             'sku' => $data['sku'] ?? null,
             'name' => $data['name'],
+            'category' => $data['category'],
+            'image' => $imageName,
+            'description' => $data['description'] ?? null,
             'price' => $data['price'],
             'stock' => $data['stock'] ?? 0,
             'created_at' => date('Y-m-d H:i:s'),
-        ]);
+        ];
+        
+        $insertId = $model->insert($insertData);
 
         if ($insertId) {
-            session()->setFlashdata('success', 'Produk berhasil ditambahkan!');
+            session()->setFlashdata('success', 'Produk "' . $data['name'] . '" berhasil ditambahkan!');
         } else {
-            session()->setFlashdata('error', 'Gagal menambahkan produk.');
+            session()->setFlashdata('error', 'Gagal menambahkan produk. Errors: ' . json_encode($model->errors()));
         }
         
         return redirect()->to('/products');
@@ -51,18 +91,67 @@ class ProductController extends BaseController
             return redirect()->to('/products');
         }
 
-        $updated = $model->update($id, [
+        // Validasi input
+        if (empty($data['name']) || !isset($data['price']) || empty($data['category'])) {
+            session()->setFlashdata('error', 'Nama, kategori, dan harga produk wajib diisi!');
+            return redirect()->to('/products');
+        }
+
+        // Handle image upload
+        $imageName = $data['old_image'] ?? null; // Keep old image by default
+        $file = $this->request->getFile('image');
+        
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            // Validasi ukuran file (max 2MB)
+            if ($file->getSize() > 2048000) {
+                session()->setFlashdata('error', 'Ukuran gambar maksimal 2MB!');
+                return redirect()->to('/products');
+            }
+            
+            // Validasi ekstensi file
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            if (!in_array(strtolower($file->getExtension()), $allowedExtensions)) {
+                session()->setFlashdata('error', 'Format gambar harus JPG, PNG, atau GIF!');
+                return redirect()->to('/products');
+            }
+            
+            // Delete old image if exists
+            if ($data['old_image'] && file_exists(FCPATH . 'uploads/products/' . $data['old_image'])) {
+                @unlink(FCPATH . 'uploads/products/' . $data['old_image']);
+            }
+            
+            // Upload new image
+            $imageName = $file->getRandomName();
+            $uploadPath = FCPATH . 'uploads/products';
+            
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+            
+            if (!$file->move($uploadPath, $imageName)) {
+                log_message('error', 'Failed to upload image: ' . $file->getErrorString());
+                session()->setFlashdata('error', 'Gagal mengupload gambar: ' . $file->getErrorString());
+                return redirect()->to('/products');
+            }
+        }
+
+        $updateData = [
             'sku' => $data['sku'] ?? null,
             'name' => $data['name'],
+            'category' => $data['category'],
+            'image' => $imageName,
+            'description' => $data['description'] ?? null,
             'price' => $data['price'],
             'stock' => $data['stock'],
             'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        ];
+        
+        $updated = $model->update($id, $updateData);
 
         if ($updated) {
-            session()->setFlashdata('success', 'Produk berhasil diupdate!');
+            session()->setFlashdata('success', 'Produk "' . $data['name'] . '" berhasil diupdate!');
         } else {
-            session()->setFlashdata('error', 'Gagal mengupdate produk.');
+            session()->setFlashdata('error', 'Gagal mengupdate produk. Errors: ' . json_encode($model->errors()));
         }
 
         return redirect()->to('/products');

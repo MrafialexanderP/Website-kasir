@@ -77,4 +77,84 @@ class LaporanController extends BaseController
 
         return view('laporan/index', $data);
     }
+
+    public function exportPdf()
+    {
+        $month = $this->request->getGet('month') ?? date('n');
+        $year = $this->request->getGet('year') ?? date('Y');
+
+        $db = \Config\Database::connect();
+
+        // Get statistics
+        $query = $db->table('transactions')
+            ->selectCount('id', 'total')
+            ->where('YEAR(created_at)', $year)
+            ->where('MONTH(created_at)', $month)
+            ->get();
+        $totalTransactions = $query->getRow()->total ?? 0;
+
+        $query = $db->table('transactions')
+            ->selectSum('total_price', 'total')
+            ->where('YEAR(created_at)', $year)
+            ->where('MONTH(created_at)', $month)
+            ->get();
+        $totalSales = $query->getRow()->total ?? 0;
+
+        $query = $db->table('transactions')
+            ->selectSum('total_qty', 'total')
+            ->where('YEAR(created_at)', $year)
+            ->where('MONTH(created_at)', $month)
+            ->get();
+        $totalItems = $query->getRow()->total ?? 0;
+
+        // Get all transactions
+        $transactions = $db->table('transactions')
+            ->where('YEAR(created_at)', $year)
+            ->where('MONTH(created_at)', $month)
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        // Get top products
+        $topProducts = $db->table('transaction_items ti')
+            ->select('p.name, SUM(ti.qty) as total_qty, SUM(ti.subtotal) as total_revenue')
+            ->join('products p', 'p.id = ti.product_id')
+            ->join('transactions t', 't.id = ti.transaction_id')
+            ->where('YEAR(t.created_at)', $year)
+            ->where('MONTH(t.created_at)', $month)
+            ->groupBy('ti.product_id')
+            ->orderBy('total_qty', 'DESC')
+            ->limit(10)
+            ->get()
+            ->getResultArray();
+
+        $monthName = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        // Generate PDF
+        $dompdf = new \Dompdf\Dompdf();
+        
+        $html = view('laporan/pdf_template', [
+            'transactions' => $transactions,
+            'topProducts' => $topProducts,
+            'totalTransactions' => $totalTransactions,
+            'totalSales' => $totalSales,
+            'totalItems' => $totalItems,
+            'month' => $monthName[$month],
+            'year' => $year,
+            'generatedDate' => date('d/m/Y H:i:s')
+        ]);
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $this->response
+            ->setHeader('Content-Type', 'application/pdf')
+            ->setHeader('Content-Disposition', 'attachment; filename="Laporan_' . $monthName[$month] . '_' . $year . '.pdf"')
+            ->setBody($dompdf->output());
+    }
 }

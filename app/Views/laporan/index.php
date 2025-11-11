@@ -1,150 +1,291 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<h2 class="mb-4"><i class="bi bi-graph-up"></i> Laporan Penjualan</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title"><i class="bi bi-graph-up"></i> Laporan Penjualan</h1>
+    <a href="<?= base_url('laporan/exportPdf?month=' . $selectedMonth . '&year=' . $selectedYear) ?>" 
+       class="btn btn-danger" target="_blank">
+        <i class="bi bi-file-pdf"></i> Download PDF
+    </a>
+</div>
 
+<!-- Statistics Cards -->
 <div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h6 class="card-title">Total Transaksi</h6>
-                <h3><?= $totalTransactions ?? 0 ?></h3>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card stat-card-primary">
+            <div class="stat-icon">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div class="stat-content">
+                <h6>Total Transaksi</h6>
+                <h2 class="stat-value"><?= $totalTransactions ?? 0 ?></h2>
+                <span class="stat-label">transaksi</span>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h6 class="card-title">Total Penjualan</h6>
-                <h3>Rp <?= number_format($totalSales ?? 0, 0, ',', '.') ?></h3>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card stat-card-success">
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="stat-content">
+                <h6>Total Penjualan</h6>
+                <h2 class="stat-value">Rp <?= number_format($totalSales ?? 0, 0, ',', '.') ?></h2>
+                <span class="stat-label">rupiah</span>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning">
-            <div class="card-body">
-                <h6 class="card-title">Total Item Terjual</h6>
-                <h3><?= $totalItems ?? 0 ?></h3>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="bi bi-box-seam"></i>
+            </div>
+            <div class="stat-content">
+                <h6>Total Item Terjual</h6>
+                <h2 class="stat-value"><?= $totalItems ?? 0 ?></h2>
+                <span class="stat-label">item</span>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h6 class="card-title">Produk Terlaris</h6>
-                <h6><?= $topProduct['name'] ?? '-' ?></h6>
-                <small><?= ($topProduct['total_qty'] ?? 0) ?> terjual</small>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card stat-card-info">
+            <div class="stat-icon">
+                <i class="bi bi-trophy"></i>
+            </div>
+            <div class="stat-content">
+                <h6>Produk Terlaris</h6>
+                <h2 class="stat-value" style="font-size: 1.2rem;"><?= substr($topProduct['name'] ?? '-', 0, 15) ?></h2>
+                <span class="stat-label"><?= ($topProduct['total_qty'] ?? 0) ?> terjual</span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-dark text-white">
-        <h5 class="mb-0">Filter Laporan</h5>
-    </div>
+<!-- Filter Card -->
+<div class="card mb-4">
     <div class="card-body">
-        <form method="get" action="<?= base_url('laporan') ?>">
-            <div class="row">
-                <div class="col-md-4">
-                    <label class="form-label">Bulan</label>
-                    <select name="month" class="form-select">
-                        <?php for ($m = 1; $m <= 12; $m++): ?>
-                            <option value="<?= $m ?>" <?= ($selectedMonth == $m) ? 'selected' : '' ?>>
-                                <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
-                            </option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Tahun</label>
-                    <select name="year" class="form-select">
-                        <?php for ($y = date('Y'); $y >= 2020; $y--): ?>
-                            <option value="<?= $y ?>" <?= ($selectedYear == $y) ? 'selected' : '' ?>><?= $y ?></option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> Tampilkan
-                    </button>
-                </div>
+        <form method="get" action="<?= base_url('laporan') ?>" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-calendar"></i> Bulan
+                </label>
+                <select name="month" class="form-select">
+                    <?php 
+                    $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                               'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                    for ($m = 1; $m <= 12; $m++): 
+                    ?>
+                        <option value="<?= $m ?>" <?= ($selectedMonth == $m) ? 'selected' : '' ?>>
+                            <?= $months[$m-1] ?>
+                        </option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-calendar-event"></i> Tahun
+                </label>
+                <select name="year" class="form-select">
+                    <?php for ($y = date('Y'); $y >= 2020; $y--): ?>
+                        <option value="<?= $y ?>" <?= ($selectedYear == $y) ? 'selected' : '' ?>><?= $y ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Terapkan Filter
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-secondary text-white">
-        <h5 class="mb-0">Transaksi Terbaru</h5>
+<!-- Transaction History -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Riwayat Transaksi</h5>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Invoice</th>
-                        <th>Tanggal</th>
-                        <th>Total Qty</th>
-                        <th>Total Harga</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($transactions)): ?>
-                        <?php foreach ($transactions as $trans): ?>
-                            <tr>
-                                <td><strong><?= esc($trans['invoice_no']) ?></strong></td>
-                                <td><?= date('d/m/Y H:i', strtotime($trans['created_at'])) ?></td>
-                                <td><?= $trans['total_qty'] ?> item</td>
-                                <td>Rp <?= number_format($trans['total_price'], 0, ',', '.') ?></td>
+        <?php if (!empty($transactions)): ?>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th width="25%">Invoice</th>
+                            <th width="15%">Tanggal</th>
+                            <th width="15%">Waktu</th>
+                            <th width="15%" class="text-center">Total Qty</th>
+                            <th width="25%" class="text-end">Total Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        date_default_timezone_set('Asia/Jakarta');
+                        $no = 1; 
+                        foreach ($transactions as $trx): 
+                            // Convert UTC to Asia/Jakarta timezone
+                            $datetime = new DateTime($trx['created_at'], new DateTimeZone('UTC'));
+                            $datetime->setTimezone(new DateTimeZone('Asia/Jakarta'));
+                        ?>
+                            <tr style="animation: fadeInUp 0.6s ease <?= $no * 0.05 ?>s backwards;">
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td><span class="badge bg-primary"><?= esc($trx['invoice_no']) ?></span></td>
+                                <td><?= $datetime->format('d/m/Y') ?></td>
+                                <td><span class="badge bg-info"><?= $datetime->format('H:i:s') ?></span></td>
+                                <td class="text-center"><strong><?= $trx['total_qty'] ?> item</strong></td>
+                                <td class="text-end">
+                                    <strong class="text-success">Rp <?= number_format($trx['total_price'], 0, ',', '.') ?></strong>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">Tidak ada transaksi pada periode ini.</td>
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-light fw-bold">
+                            <td colspan="4" class="text-end">TOTAL:</td>
+                            <td class="text-center"><?= array_sum(array_column($transactions, 'total_qty')) ?> item</td>
+                            <td class="text-end text-success">
+                                Rp <?= number_format(array_sum(array_column($transactions, 'total_price')), 0, ',', '.') ?>
+                            </td>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    </tfoot>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted" style="opacity: 0.3;"></i>
+                <h4 class="text-muted mt-3">Tidak ada transaksi</h4>
+                <p class="text-muted">Belum ada transaksi untuk periode yang dipilih</p>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-header bg-info text-white">
-        <h5 class="mb-0">Produk Terlaris (Top 10)</h5>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Produk</th>
-                        <th>Terjual</th>
-                        <th>Total Pendapatan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($topProducts)): ?>
-                        <?php $no = 1; foreach ($topProducts as $prod): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td><?= esc($prod['name']) ?></td>
-                                <td><?= $prod['total_qty'] ?> item</td>
-                                <td>Rp <?= number_format($prod['total_revenue'], 0, ',', '.') ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">Belum ada data produk terjual.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
+<style>
+.stat-card {
+    border-radius: 20px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease;
+    color: white;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.stat-card-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 4rem;
+    opacity: 0.2;
+}
+
+.stat-content {
+    position: relative;
+    z-index: 1;
+}
+
+.stat-content h6 {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1.25rem;
+    font-weight: 600;
+}
+
+.table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.table thead th {
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+}
+
+.table tfoot {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.table tfoot td {
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+// Add loading animation
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stat cards on load
+    document.querySelectorAll('.stat-card').forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+    });
+});
+</script>
 <?= $this->endSection() ?>
