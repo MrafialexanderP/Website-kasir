@@ -89,51 +89,63 @@
     </div>
 </div>
 
-<!-- Modal Sukses -->
-<div class="modal fade" id="successModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-check-circle-fill"></i> Transaksi Berhasil</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mb-3">
-                    <i class="bi bi-receipt text-success" style="font-size: 3rem;"></i>
-                </div>
-                <table class="table table-borderless">
-                    <tr>
-                        <td><strong>Invoice:</strong></td>
-                        <td class="text-end"><span class="badge bg-primary fs-6" id="invoiceNo"></span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tanggal:</strong></td>
-                        <td class="text-end" id="transactionDate"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Waktu:</strong></td>
-                        <td class="text-end"><span class="badge bg-info" id="transactionTime"></span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Total Item:</strong></td>
-                        <td class="text-end" id="modalTotalItems"></td>
-                    </tr>
-                    <tr class="border-top">
-                        <td><strong>Total Bayar:</strong></td>
-                        <td class="text-end"><h4 class="text-success mb-0" id="modalTotal"></h4></td>
-                    </tr>
-                </table>
-                <div class="alert alert-info mb-0">
-                    <i class="bi bi-info-circle"></i> Terima kasih atas transaksi Anda!
+<!-- Invoice Section (Hidden by default) -->
+<div class="row mt-4 d-none" id="invoiceSection">
+    <div class="col-12">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="bi bi-check-circle-fill"></i> Transaksi Berhasil</h4>
+                    <button class="btn btn-light btn-sm" onclick="hideInvoice()">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Tutup
-                </button>
-                <button type="button" class="btn btn-primary" onclick="window.print()">
-                    <i class="bi bi-printer"></i> Print
-                </button>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-receipt text-success" style="font-size: 4rem;"></i>
+                    <h5 class="mt-3 text-success">Invoice Transaksi</h5>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <table class="table table-borderless table-lg">
+                            <tr>
+                                <td width="40%"><strong>Invoice:</strong></td>
+                                <td class="text-end"><span class="badge bg-primary fs-5" id="invoiceNo"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tanggal:</strong></td>
+                                <td class="text-end fs-6" id="transactionDate"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Waktu:</strong></td>
+                                <td class="text-end"><span class="badge bg-info fs-6" id="transactionTime"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Item:</strong></td>
+                                <td class="text-end fs-5" id="invoiceTotalItems"></td>
+                            </tr>
+                            <tr class="border-top">
+                                <td><strong>Total Bayar:</strong></td>
+                                <td class="text-end"><h3 class="text-success mb-0" id="invoiceTotal"></h3></td>
+                            </tr>
+                        </table>
+                        
+                        <div class="alert alert-success mb-3">
+                            <i class="bi bi-info-circle"></i> Terima kasih atas transaksi Anda!
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="window.print()">
+                                <i class="bi bi-printer"></i> Print Invoice
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="hideInvoice()">
+                                <i class="bi bi-x-circle"></i> Tutup & Transaksi Baru
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -142,6 +154,46 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<style>
+/* Prevent modal from causing page scroll */
+body.modal-open {
+    overflow: hidden !important;
+}
+
+#invoiceSection {
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media print {
+    /* Hide everything except invoice when printing */
+    body * {
+        visibility: hidden;
+    }
+    #invoiceSection, #invoiceSection * {
+        visibility: visible;
+    }
+    #invoiceSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    #invoiceSection .btn {
+        display: none !important;
+    }
+}
+</style>
 <script>
 // Load cart from localStorage on page load
 let cart = JSON.parse(localStorage.getItem('kasirCart') || '[]');
@@ -332,6 +384,11 @@ function clearCart() {
     }
 }
 
+function hideInvoice() {
+    document.getElementById('invoiceSection').classList.add('d-none');
+    location.reload();
+}
+
 async function processTransaction() {
     if (cart.length === 0) return;
     
@@ -361,23 +418,23 @@ async function processTransaction() {
             // Get total items
             const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
             
-            // Fill modal with transaction details
-            document.getElementById('invoiceNo').textContent = result.invoice;
-            document.getElementById('transactionDate').textContent = formattedDate;
-            document.getElementById('transactionTime').textContent = formattedTime;
-            document.getElementById('modalTotalItems').textContent = totalItems + ' item';
-            document.getElementById('modalTotal').textContent = document.getElementById('totalPrice').textContent;
+            // Fill invoice section with transaction details
+            const invoiceNo = document.getElementById('invoiceNo');
+            const transactionDate = document.getElementById('transactionDate');
+            const transactionTime = document.getElementById('transactionTime');
+            const invoiceTotalItems = document.getElementById('invoiceTotalItems');
+            const invoiceTotal = document.getElementById('invoiceTotal');
             
-            // Show success modal
-            const modalElement = document.getElementById('successModal');
-            if (modalElement) {
-                const successModal = new bootstrap.Modal(modalElement, {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                successModal.show();
+            if (invoiceNo && transactionDate && transactionTime && invoiceTotalItems && invoiceTotal) {
+                invoiceNo.textContent = result.invoice;
+                transactionDate.textContent = formattedDate;
+                transactionTime.textContent = formattedTime;
+                invoiceTotalItems.textContent = totalItems + ' item';
+                invoiceTotal.textContent = document.getElementById('totalPrice').textContent;
             } else {
-                console.error('Modal element not found!');
+                console.error('Invoice elements not found!');
+                alert('Error: Invoice elements not found. Please refresh the page.');
+                return;
             }
             
             // Clear cart
@@ -385,8 +442,18 @@ async function processTransaction() {
             localStorage.removeItem('kasirCart');
             renderCart();
             
-            // Reload after 5 seconds (diperpanjang untuk bisa lihat modal)
-            setTimeout(() => location.reload(), 5000);
+            // Show invoice section and scroll to it
+            const invoiceSection = document.getElementById('invoiceSection');
+            if (invoiceSection) {
+                invoiceSection.classList.remove('d-none');
+                
+                // Smooth scroll to invoice
+                setTimeout(() => {
+                    invoiceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                console.error('Invoice section not found!');
+            }
         } else {
             alert('Error: ' + result.error);
         }
