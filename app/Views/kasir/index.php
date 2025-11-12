@@ -80,6 +80,25 @@
                     <h5 class="mb-0">Total Bayar:</h5>
                     <h4 class="text-success mb-0" id="totalPrice">Rp 0</h4>
                 </div>
+                
+                <!-- Payment Method Selection -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-credit-card"></i> Metode Pembayaran
+                    </label>
+                    <select class="form-select" id="paymentMethod" onchange="showPaymentDetails()">
+                        <option value="">-- Pilih Metode Pembayaran --</option>
+                        <option value="cash">💵 Cash (Tunai)</option>
+                        <option value="qris">📱 QRIS</option>
+                        <option value="transfer">🏦 Transfer Bank</option>
+                    </select>
+                </div>
+                
+                <!-- Payment Details (Hidden by default) -->
+                <div id="paymentDetails" class="alert d-none mb-3" style="border-radius: 12px;">
+                    <!-- Details will be shown here based on payment method -->
+                </div>
+                
                 <button class="btn btn-success btn-lg w-100" onclick="processTransaction()" id="btnCheckout" disabled>
                     <i class="bi bi-cash-coin"></i> Proses Transaksi
                 </button>
@@ -133,12 +152,40 @@
                         </div>
                         <div class="col-7 text-end" id="invoiceTotalItems"></div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
+                        <div class="col-5 text-start">
+                            <strong>Metode Pembayaran:</strong>
+                        </div>
+                        <div class="col-7 text-end">
+                            <span class="badge bg-primary" id="invoicePaymentMethod"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
                         <div class="col-5 text-start">
                             <strong>Total Bayar:</strong>
                         </div>
                         <div class="col-7 text-end">
                             <strong class="text-success fs-5" id="invoiceTotal"></strong>
+                        </div>
+                    </div>
+                    <!-- Cash Payment Details (Hidden by default) -->
+                    <div id="invoiceCashDetails" class="d-none">
+                        <hr class="my-2">
+                        <div class="row mb-2">
+                            <div class="col-5 text-start">
+                                <strong>Uang Dibayar:</strong>
+                            </div>
+                            <div class="col-7 text-end">
+                                <span id="invoiceCashPaid">Rp 0</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5 text-start">
+                                <strong>Kembalian:</strong>
+                            </div>
+                            <div class="col-7 text-end">
+                                <strong class="text-info" id="invoiceChange">Rp 0</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,6 +233,50 @@
 /* Prevent modal from causing page scroll */
 body.modal-open {
     overflow: hidden !important;
+}
+
+/* Payment method styling */
+#paymentMethod {
+    border: 2px solid #e9ecef;
+    font-weight: 500;
+}
+
+#paymentMethod:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+#paymentDetails {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#paymentDetails .alert-success {
+    background: linear-gradient(135deg, #11998e15 0%, #38ef7d15 100%);
+    border-left: 4px solid #11998e;
+    color: #0d6e60;
+}
+
+#paymentDetails .alert-info {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    border-left: 4px solid #667eea;
+    color: #4a5a9f;
+}
+
+#paymentDetails .alert-warning {
+    background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+    border-left: 4px solid #f093fb;
+    color: #8e446c;
 }
 
 #invoiceSection {
@@ -584,6 +675,8 @@ function renderCart() {
         container.innerHTML = '<p class="text-center text-muted" id="emptyCart">Keranjang kosong</p>';
         document.getElementById('totalPrice').textContent = 'Rp 0';
         document.getElementById('btnCheckout').disabled = true;
+        document.getElementById('paymentMethod').value = '';
+        document.getElementById('paymentDetails').classList.add('d-none');
         updateCartInfo(0, 0);
         return;
     }
@@ -634,7 +727,10 @@ function renderCart() {
     
     container.innerHTML = html;
     document.getElementById('totalPrice').textContent = 'Rp ' + total.toLocaleString('id-ID');
-    document.getElementById('btnCheckout').disabled = false;
+    
+    // Check if payment method is selected before enabling checkout
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    document.getElementById('btnCheckout').disabled = !paymentMethod;
     
     // Update info jumlah item di keranjang
     updateCartInfo(totalQty, total);
@@ -652,6 +748,147 @@ function updateCartInfo(qty, total) {
     if (totalItems) {
         totalItems.textContent = qty;
     }
+}
+
+// Show payment method details
+function showPaymentDetails() {
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    const paymentDetails = document.getElementById('paymentDetails');
+    const btnCheckout = document.getElementById('btnCheckout');
+    
+    if (!paymentMethod) {
+        paymentDetails.classList.add('d-none');
+        if (cart.length > 0) {
+            btnCheckout.disabled = true;
+        }
+        return;
+    }
+    
+    paymentDetails.classList.remove('d-none');
+    
+    if (paymentMethod === 'cash') {
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        paymentDetails.className = 'alert alert-success mb-3';
+        paymentDetails.innerHTML = `
+            <div>
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-cash-coin" style="font-size: 2rem; margin-right: 1rem;"></i>
+                    <div>
+                        <h6 class="mb-1 fw-bold">Pembayaran Tunai</h6>
+                        <small>Masukkan nominal uang yang dibayarkan pembeli</small>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Total Bayar:</label>
+                    <input type="text" class="form-control bg-light" value="Rp ${totalPrice.toLocaleString('id-ID')}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Uang Dibayarkan:</label>
+                    <input type="number" class="form-control" id="cashPaid" placeholder="Masukkan nominal..." 
+                           oninput="calculateChange()" min="${totalPrice}">
+                    <small class="text-muted">Minimal: Rp ${totalPrice.toLocaleString('id-ID')}</small>
+                </div>
+                <div id="changeSection" class="d-none">
+                    <div class="alert alert-info mb-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>Kembalian:</strong>
+                            <h5 class="mb-0 text-primary" id="changeAmount">Rp 0</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (paymentMethod === 'qris') {
+        paymentDetails.className = 'alert alert-info mb-3';
+        paymentDetails.innerHTML = `
+            <div class="text-center">
+                <i class="bi bi-qr-code" style="font-size: 3rem; color: #0066cc;"></i>
+                <h6 class="mt-2 mb-1 fw-bold">Pembayaran QRIS</h6>
+                <small class="d-block mb-2">Scan QR Code untuk melakukan pembayaran</small>
+                <div class="bg-white p-3 rounded d-inline-block">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Kasir_ATK_Payment" 
+                         alt="QRIS Code" style="width: 150px; height: 150px;">
+                </div>
+                <p class="mt-2 mb-0 text-muted"><small>Scan dengan aplikasi mobile banking atau e-wallet</small></p>
+            </div>
+        `;
+    } else if (paymentMethod === 'transfer') {
+        const accountNumber = '1234567890'; // Random account number
+        paymentDetails.className = 'alert alert-warning mb-3';
+        paymentDetails.innerHTML = `
+            <div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-bank" style="font-size: 2rem; margin-right: 1rem;"></i>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Transfer Bank AKN</h6>
+                    </div>
+                </div>
+                <hr class="my-2">
+                <div class="row">
+                    <div class="col-5 text-muted">Bank:</div>
+                    <div class="col-7"><strong>Bank AKN</strong></div>
+                </div>
+                <div class="row">
+                    <div class="col-5 text-muted">Nomor Rekening:</div>
+                    <div class="col-7">
+                        <strong class="text-primary">${accountNumber}</strong>
+                        <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('${accountNumber}')" title="Copy">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5 text-muted">Atas Nama:</div>
+                    <div class="col-7"><strong>Kasir ATK</strong></div>
+                </div>
+                <small class="d-block mt-2 text-muted">
+                    <i class="bi bi-info-circle"></i> Lakukan transfer sesuai total pembayaran
+                </small>
+            </div>
+        `;
+    }
+    
+    // Enable checkout button if cart is not empty and payment method is selected
+    if (cart.length > 0 && paymentMethod) {
+        // For cash, enable button only if cash paid is valid
+        if (paymentMethod === 'cash') {
+            btnCheckout.disabled = true; // Will be enabled by calculateChange
+        } else {
+            btnCheckout.disabled = false;
+        }
+    }
+}
+
+// Calculate change for cash payment
+function calculateChange() {
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const cashPaid = parseFloat(document.getElementById('cashPaid').value) || 0;
+    const changeSection = document.getElementById('changeSection');
+    const changeAmount = document.getElementById('changeAmount');
+    const btnCheckout = document.getElementById('btnCheckout');
+    
+    if (cashPaid >= totalPrice && cashPaid > 0) {
+        const change = cashPaid - totalPrice;
+        changeSection.classList.remove('d-none');
+        changeAmount.textContent = 'Rp ' + change.toLocaleString('id-ID');
+        btnCheckout.disabled = false;
+    } else {
+        changeSection.classList.add('d-none');
+        btnCheckout.disabled = true;
+    }
+}
+
+// Copy to clipboard function
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Tersalin!',
+            text: 'Nomor rekening berhasil disalin',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    });
 }
 
 async function clearCart() {
@@ -675,6 +912,7 @@ async function clearCart() {
 
 function hideInvoice() {
     document.getElementById('invoiceSection').classList.add('d-none');
+    document.getElementById('invoiceCashDetails').classList.add('d-none');
     invoiceItems = []; // Clear invoice items
     location.reload();
 }
@@ -710,10 +948,49 @@ function fillInvoiceItems() {
 async function processTransaction() {
     if (cart.length === 0) return;
     
-    const data = cart.map(item => ({
-        product_id: item.id,
-        qty: item.qty
-    }));
+    // Validate payment method
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    if (!paymentMethod) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Pilih Metode Pembayaran',
+            text: 'Silakan pilih metode pembayaran terlebih dahulu',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+    
+    // Validate cash payment
+    if (paymentMethod === 'cash') {
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const cashPaid = parseFloat(document.getElementById('cashPaid').value) || 0;
+        
+        if (cashPaid < totalPrice) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Uang Tidak Cukup',
+                text: 'Nominal uang yang dibayarkan kurang dari total belanja',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+    }
+    
+    // Get payment method name
+    const paymentMethodNames = {
+        'cash': 'Cash (Tunai)',
+        'qris': 'QRIS',
+        'transfer': 'Transfer Bank AKN'
+    };
+    const paymentMethodName = paymentMethodNames[paymentMethod];
+    
+    const data = {
+        cart: cart.map(item => ({
+            product_id: item.id,
+            qty: item.qty
+        })),
+        payment_method: paymentMethod
+    };
     
     try {
         const response = await fetch('<?= base_url('transactions/store') ?>', {
@@ -742,14 +1019,27 @@ async function processTransaction() {
             const transactionDate = document.getElementById('transactionDate');
             const transactionTime = document.getElementById('transactionTime');
             const invoiceTotalItems = document.getElementById('invoiceTotalItems');
+            const invoicePaymentMethod = document.getElementById('invoicePaymentMethod');
             const invoiceTotal = document.getElementById('invoiceTotal');
             
-            if (invoiceNo && transactionDate && transactionTime && invoiceTotalItems && invoiceTotal) {
+            if (invoiceNo && transactionDate && transactionTime && invoiceTotalItems && invoicePaymentMethod && invoiceTotal) {
                 invoiceNo.textContent = result.invoice;
                 transactionDate.textContent = formattedDate;
                 transactionTime.textContent = formattedTime;
                 invoiceTotalItems.textContent = totalItems + ' item';
+                invoicePaymentMethod.textContent = paymentMethodName;
                 invoiceTotal.textContent = document.getElementById('totalPrice').textContent;
+                
+                // Show cash payment details if payment method is cash
+                if (paymentMethod === 'cash') {
+                    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                    const cashPaid = parseFloat(document.getElementById('cashPaid').value) || 0;
+                    const change = cashPaid - totalPrice;
+                    
+                    document.getElementById('invoiceCashDetails').classList.remove('d-none');
+                    document.getElementById('invoiceCashPaid').textContent = 'Rp ' + cashPaid.toLocaleString('id-ID');
+                    document.getElementById('invoiceChange').textContent = 'Rp ' + change.toLocaleString('id-ID');
+                }
                 
                 // Fill invoice items table
                 fillInvoiceItems();

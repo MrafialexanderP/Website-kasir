@@ -133,12 +133,13 @@
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
-                            <th width="20%">Invoice</th>
-                            <th width="13%">Tanggal</th>
-                            <th width="13%">Waktu</th>
-                            <th width="13%" class="text-center">Total Qty</th>
-                            <th width="20%" class="text-end">Total Harga</th>
+                            <th width="5%" class="text-center">No</th>
+                            <th width="18%">Invoice</th>
+                            <th width="12%" class="text-center">Tanggal</th>
+                            <th width="10%" class="text-center">Waktu</th>
+                            <th width="10%" class="text-center">Total Qty</th>
+                            <th width="13%" class="text-center">Pembayaran</th>
+                            <th width="16%" class="text-end">Total Harga</th>
                             <th width="16%" class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -150,13 +151,36 @@
                             // Convert UTC to Asia/Jakarta timezone
                             $datetime = new DateTime($trx['created_at'], new DateTimeZone('UTC'));
                             $datetime->setTimezone(new DateTimeZone('Asia/Jakarta'));
+                            
+                            // Payment method display
+                            $paymentMethodDisplay = '-';
+                            $paymentBadgeClass = 'bg-secondary';
+                            if (!empty($trx['payment_method'])) {
+                                switch($trx['payment_method']) {
+                                    case 'cash':
+                                        $paymentMethodDisplay = '💵 Cash';
+                                        $paymentBadgeClass = 'bg-success';
+                                        break;
+                                    case 'qris':
+                                        $paymentMethodDisplay = '📱 QRIS';
+                                        $paymentBadgeClass = 'bg-info';
+                                        break;
+                                    case 'transfer':
+                                        $paymentMethodDisplay = '🏦 Transfer';
+                                        $paymentBadgeClass = 'bg-warning text-dark';
+                                        break;
+                                }
+                            }
                         ?>
                             <tr style="animation: fadeInUp 0.6s ease <?= ($no - (($pager['currentPage'] - 1) * $pager['perPage'])) * 0.05 ?>s backwards;">
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td><span class="badge bg-primary"><?= esc($trx['invoice_no']) ?></span></td>
-                                <td><?= $datetime->format('d/m/Y') ?></td>
-                                <td><span class="badge bg-info"><?= $datetime->format('H:i:s') ?></span></td>
+                                <td class="text-center"><?= $datetime->format('d/m/Y') ?></td>
+                                <td class="text-center"><span class="badge bg-info"><?= $datetime->format('H:i:s') ?></span></td>
                                 <td class="text-center"><strong><?= $trx['total_qty'] ?> item</strong></td>
+                                <td class="text-center">
+                                    <span class="badge <?= $paymentBadgeClass ?>"><?= $paymentMethodDisplay ?></span>
+                                </td>
                                 <td class="text-end">
                                     <strong class="text-success">Rp <?= number_format($trx['total_price'], 0, ',', '.') ?></strong>
                                 </td>
@@ -170,8 +194,8 @@
                     </tbody>
                     <tfoot>
                         <tr class="table-light fw-bold">
-                            <td colspan="4" class="text-end">TOTAL KESELURUHAN:</td>
-                            <td class="text-center"><?= $totalItems ?? 0 ?> item</td>
+                            <td colspan="5" class="text-end">TOTAL KESELURUHAN:</td>
+                            <td></td>
                             <td class="text-end text-success">
                                 Rp <?= number_format($totalSales ?? 0, 0, ',', '.') ?>
                             </td>

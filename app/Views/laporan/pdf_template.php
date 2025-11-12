@@ -69,13 +69,16 @@
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 6px 8px;
             text-align: left;
+            font-size: 10px;
+            vertical-align: middle;
         }
         th {
             background-color: #343a40;
             color: white;
             font-weight: bold;
+            padding: 8px;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -139,12 +142,13 @@
     <table>
         <thead>
             <tr>
-                <th width="5%">No</th>
-                <th width="25%">Invoice</th>
-                <th width="20%">Tanggal</th>
-                <th width="15%">Waktu</th>
-                <th width="15%" class="text-center">Qty</th>
-                <th width="20%" class="text-right">Total</th>
+                <th width="5%" class="text-center">No</th>
+                <th width="22%">Invoice</th>
+                <th width="13%" class="text-center">Tanggal</th>
+                <th width="10%" class="text-center">Waktu</th>
+                <th width="10%" class="text-center">Qty</th>
+                <th width="15%" class="text-center">Pembayaran</th>
+                <th width="25%" class="text-right">Total</th>
             </tr>
         </thead>
         <tbody>
@@ -156,19 +160,36 @@
                     // Convert UTC to Asia/Jakarta timezone
                     $datetime = new DateTime($trx['created_at'], new DateTimeZone('UTC'));
                     $datetime->setTimezone(new DateTimeZone('Asia/Jakarta'));
+                    
+                    // Payment method display
+                    $paymentMethodDisplay = '-';
+                    if (!empty($trx['payment_method'])) {
+                        switch($trx['payment_method']) {
+                            case 'cash':
+                                $paymentMethodDisplay = 'Cash';
+                                break;
+                            case 'qris':
+                                $paymentMethodDisplay = 'QRIS';
+                                break;
+                            case 'transfer':
+                                $paymentMethodDisplay = 'Transfer Bank';
+                                break;
+                        }
+                    }
                 ?>
                     <tr>
                         <td class="text-center"><?= $no++ ?></td>
                         <td><?= esc($trx['invoice_no']) ?></td>
-                        <td><?= $datetime->format('d/m/Y') ?></td>
-                        <td><?= $datetime->format('H:i:s') ?></td>
-                        <td class="text-center"><?= $trx['total_qty'] ?></td>
+                        <td class="text-center"><?= $datetime->format('d/m/Y') ?></td>
+                        <td class="text-center"><?= $datetime->format('H:i:s') ?></td>
+                        <td class="text-center"><?= $trx['total_qty'] ?> item</td>
+                        <td class="text-center"><?= $paymentMethodDisplay ?></td>
                         <td class="text-right">Rp <?= number_format($trx['total_price'], 0, ',', '.') ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" class="text-center">Tidak ada transaksi</td>
+                    <td colspan="7" class="text-center">Tidak ada transaksi</td>
                 </tr>
             <?php endif; ?>
         </tbody>

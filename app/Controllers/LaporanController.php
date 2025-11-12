@@ -161,6 +161,9 @@ class LaporanController extends BaseController
         // Generate PDF
         $dompdf = new \Dompdf\Dompdf();
         
+        // Set timezone to Asia/Jakarta for generated date
+        date_default_timezone_set('Asia/Jakarta');
+        
         $html = view('laporan/pdf_template', [
             'transactions' => $transactions,
             'topProducts' => $topProducts,
@@ -231,8 +234,10 @@ class LaporanController extends BaseController
 
     public function deleteAll()
     {
-        $month = $this->request->getPost('month');
-        $year = $this->request->getPost('year');
+        // Get JSON input
+        $json = $this->request->getJSON();
+        $month = $json->month ?? null;
+        $year = $json->year ?? null;
         
         if (!$month || !$year) {
             return $this->response->setJSON([

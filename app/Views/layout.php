@@ -17,12 +17,59 @@
             overflow-x: hidden;
         }
         
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1050;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .hamburger-btn i {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+        
         .sidebar { 
             min-height: 100vh; 
             background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
             box-shadow: 4px 0 20px rgba(0,0,0,0.1);
             position: relative;
             z-index: 100;
+            transition: transform 0.3s ease;
         }
         
         .sidebar::before {
@@ -382,13 +429,107 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Responsive Design */
+        @media (max-width: 767.98px) {
+            .hamburger-btn {
+                display: flex;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 280px;
+                z-index: 1000;
+                transform: translateX(-100%);
+                overflow-y: auto;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                padding: 5rem 1rem 2rem 1rem;
+            }
+            
+            .sidebar .brand {
+                padding: 1.5rem 1rem;
+            }
+            
+            .sidebar .brand h4 {
+                font-size: 1.3rem;
+            }
+            
+            .sidebar .brand i {
+                font-size: 2rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .card {
+                border-radius: 15px;
+            }
+            
+            /* User section responsive */
+            .sidebar .px-3 .d-flex {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            
+            .sidebar .px-3 .flex-grow-1 {
+                width: 100%;
+            }
+            
+            .sidebar .px-3 a.btn {
+                width: 100%;
+                min-width: auto !important;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .sidebar .brand h4 {
+                font-size: 1.2rem;
+            }
+            
+            .sidebar .nav-link {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .sidebar {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger-btn" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+    
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-2 col-lg-2 px-0 sidebar">
+            <div class="col-md-2 col-lg-2 px-0 sidebar" id="sidebar">
                 <div class="brand">
                     <i class="bi bi-shop"></i>
                     <h4>Kasir ATK</h4>
@@ -412,7 +553,7 @@
                 <!-- Sidebar User + Logout (Side by side) -->
                 <div class="px-3 pt-2 pb-4">
                     <div class="d-flex gap-2">
-                        <div class="flex-grow-1 d-flex align-items-center shadow-sm px-3 py-2" style="border-radius:16px;">
+                        <div class="flex-grow-1 d-flex align-items-center shadow-sm px-3 py-2" style="border-radius:16px; background:rgba(255,255,255,0.1);">
                             <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#667eea 0%, #764ba2 100%); display:flex; align-items:center; justify-content:center;">
                                 <i class="bi bi-person-circle text-white" style="font-size:1.3rem;"></i>
                             </div>
@@ -422,7 +563,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="<?= base_url('logout') ?>" class="btn d-flex align-items-center justify-content-center shadow-sm" style="border-radius:16px; min-width:100px;  color:#fff; font-weight:600; border:none; outline:none;">
+                        <a href="<?= base_url('logout') ?>" class="btn d-flex align-items-center justify-content-center shadow-sm" style="border-radius:16px; min-width:100px; background:linear-gradient(135deg,#667eea 0%, #764ba2 100%); color:#fff; font-weight:600; border:none; outline:none;">
                             <i class="bi bi-box-arrow-right me-1"></i> Logout
                         </a>
                     </div>
@@ -438,6 +579,49 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+            
+            // Prevent body scroll when sidebar is open on mobile
+            if (sidebar.classList.contains('show')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Close sidebar when clicking on a nav link (mobile only)
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            const isMobile = window.innerWidth < 768;
+            
+            if (isMobile) {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        setTimeout(toggleSidebar, 200);
+                    });
+                });
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>

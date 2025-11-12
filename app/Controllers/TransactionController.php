@@ -14,10 +14,18 @@ class TransactionController extends BaseController
         $db = \Config\Database::connect();
         $productModel = new ProductModel();
 
-        $cart = $this->request->getJSON(true);
-        if (empty($cart)) {
+        // Get data from request
+        $requestData = $this->request->getJSON(true);
+        
+        // Extract cart and payment_method
+        $cart = $requestData['cart'] ?? $requestData;
+        $paymentMethod = $requestData['payment_method'] ?? null;
+        
+        // Fallback for old format
+        if (empty($cart) || !is_array($cart)) {
             $cart = $this->request->getVar('cart');
             if (is_string($cart)) $cart = json_decode($cart, true);
+            $paymentMethod = $this->request->getVar('payment_method');
         }
 
         if (empty($cart) || !is_array($cart)) {
@@ -65,6 +73,7 @@ class TransactionController extends BaseController
             'user_id' => null,
             'total_qty' => $totalQty,
             'total_price' => $totalPrice,
+            'payment_method' => $paymentMethod,
             'created_at' => date('Y-m-d H:i:s'),
         ]);
         $transactionId = $db->insertID();
