@@ -26,7 +26,7 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-search text-primary"></i></span>
-                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama atau SKU produk...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama produk...">
                 </div>
             </div>
             <div class="col-md-2">
